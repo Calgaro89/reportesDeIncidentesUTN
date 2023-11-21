@@ -5,12 +5,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+//@Builder
+@NoArgsConstructor
 @Entity
-@Table(name = "incidentes")
+
 public class Incidente {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
     private String problema;
     private String descripcion;
@@ -23,4 +24,5 @@ public class Incidente {
     private int tiempo_solucion;
     private String tipo_comunicacion;
     private boolean estado;
+
 }

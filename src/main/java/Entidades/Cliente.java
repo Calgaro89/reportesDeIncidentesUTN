@@ -4,16 +4,22 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@Builder
+@NoArgsConstructor
+//@Builder
 @Entity
-@Table(name="cliente")
+
 public class Cliente {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCliente;
+    @Column
     private String cuit;
+    @Column
     private String nombre;
+    @Column
     private long celular;
+    @Column
     private String mail;
+    @Column
     private boolean estado;
 }

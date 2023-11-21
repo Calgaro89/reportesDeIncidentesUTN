@@ -4,15 +4,20 @@
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="JPA_PU" transaction-type="RESOURCE_LOCAL">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>java.Entidades.Cliente</class>
+        <class>java.Entidades.Incidente</class>
+        <class>java.Entidades.Tecnico</class>
         <properties>
-            <property name="javax.persistence.jdbc.url"
-                      value="jdbc:mariadb://localhost:3306/utn?zeroDateTimeBehavior=convertToNull&amp;server
-Timezone=UTC"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/p"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
-            <property name="javax.persistence.jdbc.driver" value="com.mariadb.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.password" value=""/>
-            <property name="javax.persistence.schema-generation.database.action" value="create"/>
+            <property name="javax.persistence.jdbc.driver_class" value="com.mariadb.jdbc.Driver"/>
+            <property name="javax.persistence.schema-generation.database.action" value="update"/>
+
+            <property name="org.hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect"/>
+            <property name="org.hibernate.handlers" value="false"/>
+
         </properties>
     </persistence-unit>
 </persistence>

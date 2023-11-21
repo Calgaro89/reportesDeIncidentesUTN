@@ -5,17 +5,23 @@ import javax.persistence.*;
 import java.util.HashSet;
 
 @Data
-@Builder
+@NoArgsConstructor
+//@Builder
 @Entity
-@Table(name="tecnicos")
+
 public class Tecnico {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idTecnico;
+    @Column
     private String nombre;
+    @Column
     private String apellido;
+    @Column
     private int dni;
-    @OneToMany (mappedBy = "software")
-    private HashSet conocimientos;
+   // @OneToMany (mappedBy = "software")
+    //@Column
+    //private HashSet conocimientos;
+    @Column
     private boolean estado;
 }
