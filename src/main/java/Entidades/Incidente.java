@@ -1,6 +1,5 @@
 package Entidades;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
+@Table(name = "incidentes")
 public class Incidente {
     @Id
     @GeneratedValue

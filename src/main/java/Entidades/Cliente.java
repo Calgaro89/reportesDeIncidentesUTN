@@ -1,14 +1,12 @@
 package Entidades;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Builder
 @Entity
+@Table(name="cliente")
 public class Cliente {
     @Id
     @GeneratedValue
