@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ClienteManager {
     private static final String PERSISTENCE_UNIT_NAME = "JPA_PU";
+
 public static void main(String[] args) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -27,4 +28,4 @@ public static void main(String[] args) {
     }
 }
 
-}
+
