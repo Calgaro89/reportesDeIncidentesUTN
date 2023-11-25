@@ -19,9 +19,6 @@ public class Tecnico {
     private String apellido;
     @Column
     private int dni;
-   // @OneToMany (mappedBy = "software")
-    //@Column
-    //private HashSet conocimientos;
     @Column
     private boolean estado;
 }

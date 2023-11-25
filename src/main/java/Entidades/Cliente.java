@@ -5,7 +5,6 @@ import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
-//@Builder
 @Entity
 
 public class Cliente {

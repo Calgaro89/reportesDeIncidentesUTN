@@ -8,11 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-/**
- * Hello world!
- *
- */
-public class App 
+public class App
 {
     public static void main( String[] args ) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA_PU"); //Creo una unidad de persistencia con el nombre 'a', la buscará en src/resources/persistence.xml
