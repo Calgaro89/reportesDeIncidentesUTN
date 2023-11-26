@@ -6,13 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class Problema {
+public class Software {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String descripcion;
-
-    @ManyToOne
-    private Incidente incidente;
+    private Long id;
+    private String nombre;
 }
-
