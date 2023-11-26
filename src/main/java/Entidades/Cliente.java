@@ -3,15 +3,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCliente;
-    @Column
+    @Column(unique = true)
     private String cuit;
     @Column
     private String nombre;

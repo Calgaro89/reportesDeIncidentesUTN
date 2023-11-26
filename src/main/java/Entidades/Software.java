@@ -1,7 +1,6 @@
 package Entidades;
 
-import lombok.Data;
-
+import lombok.*;
 import javax.persistence.*;
 
 @Entity
@@ -9,6 +8,9 @@ import javax.persistence.*;
 public class Software {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
+    @Column
     private String nombre;
+    @Column
+    private boolean estado;
 }

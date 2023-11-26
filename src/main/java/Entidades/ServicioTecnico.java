@@ -1,17 +1,18 @@
 package Entidades;
 
-import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.*;
+import javax.persistence.*;
 
 @Entity
 @Data
 public class ServicioTecnico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String nombre;
+    private int idServicioTecnico;
+    @OneToOne
+    @JoinColumn(name = "idTecnico")
+    private Tecnico idTecnico;
+    @OneToOne
+    @JoinColumn(name = "idSoftware")
+    private Software idSoftware;
 }

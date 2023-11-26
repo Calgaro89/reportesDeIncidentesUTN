@@ -4,27 +4,30 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
-//@Builder
-@NoArgsConstructor
 @Entity
-
+@Data
 public class Incidente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
-   // @ManyToOne
+    @Column
     private String descripcion;
-   @ManyToOne
-   @JoinColumn(name = "idCliente")
-   private Cliente cliente;
-   @ManyToOne
-   @JoinColumn(name = "idTecnico")
-    private Tecnico tecnio;
-    private LocalDateTime fecha_ingreso;
-    private LocalDateTime fecha_solucion;
-    private int tiempo_solucion;
-    private String tipo_comunicacion;
+    @OneToOne
+    @JoinColumn(name = "idCategoria")
+    private Categoria categoria;
+    @ManyToOne
+    @JoinColumn(name = "idCliente")
+    private Cliente cliente;
+    @ManyToOne
+    @JoinColumn(name = "idTecnico")
+    private Tecnico tecnico;
+    @Column
+    private LocalDateTime fechaIngreso;
+    @Column
+    private LocalDateTime fechaFin;
+    @Column
+    private int tiempoResolucion;
+    @Column
     private boolean estado;
 
 }

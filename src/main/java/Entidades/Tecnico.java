@@ -1,14 +1,11 @@
 package Entidades;
-import lombok.*;
 
+import lombok.*;
 import javax.persistence.*;
 import java.util.HashSet;
 
-@Data
-@NoArgsConstructor
-//@Builder
 @Entity
-
+@Data
 public class Tecnico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +14,7 @@ public class Tecnico {
     private String nombre;
     @Column
     private String apellido;
-    @Column
+    @Column(unique = true)
     private int dni;
     @Column
     private boolean estado;
