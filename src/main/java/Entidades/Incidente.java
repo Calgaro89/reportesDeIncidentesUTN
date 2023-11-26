@@ -13,11 +13,13 @@ public class Incidente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
-    @ManyToOne
+   // @ManyToOne
     private String descripcion;
-    @ManyToOne @JoinColumn(name = "idCliente")
-    private Cliente cliente;
-    @ManyToOne @JoinColumn(name = "idTecnico")
+   @ManyToOne
+   @JoinColumn(name = "idCliente")
+   private Cliente cliente;
+   @ManyToOne
+   @JoinColumn(name = "idTecnico")
     private Tecnico tecnio;
     private LocalDateTime fecha_ingreso;
     private LocalDateTime fecha_solucion;

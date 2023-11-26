@@ -4,9 +4,9 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@NoArgsConstructor
 @Entity
-
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
