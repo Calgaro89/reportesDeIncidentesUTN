@@ -14,7 +14,6 @@ public class Incidente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
     @ManyToOne
-    private Servicios servicio;
     private String descripcion;
     @ManyToOne @JoinColumn(name = "idCliente")
     private Cliente cliente;
