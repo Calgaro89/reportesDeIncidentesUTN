@@ -8,7 +8,7 @@ public class MesaEntrada {
         int opcion;
         do{
         System.out.println("1 - Clientes");
-        System.out.println("2 - Atención Cliente");
+        System.out.println("2 - Atención al Cliente");
         System.out.println("3 - RRHH");
         System.out.println("4 - Salir");
 
@@ -26,7 +26,10 @@ public class MesaEntrada {
 }
 
         public static void clientes(){
-            System.out.println("cliente");
+          System.out.println("------------------------");
+          System.out.println("1 - Reportar Problemas");
+          System.out.println("2 - Consultar Suscripciones");
+          System.out.println("3 - Consultar Suscripciones");
         }
 
         public static void atencionCliente(){
