@@ -17,7 +17,7 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
             <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.driver_class" value="com.mariadb.jdbc.Driver"/>
-            <property name="javax.persistence.schema-generation.database.action" value="create"/>
+            <property name="javax.persistence.schema-generation.database.action" value="update"/>
             <property name="org.hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect"/>
             <property name="org.hibernate.handlers" value="false"/>
         </properties>

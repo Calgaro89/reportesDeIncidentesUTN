@@ -1,44 +1,17 @@
 package Managers;
 
 import Entidades.Cliente;
-import org.example.MenuPrincipal;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import Entidades.Software;
+import javax.persistence.*;
 import java.util.List;
-import java.util.Scanner;
 
-public class AreaComercial {
-    private static Scanner leer = new Scanner(System.in);
+public class AreaComercialBack {
+
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
-
-    public static void areaComercial(){
-        int opcion;
-        do{
-            System.out.println("-------AREA COMERCIAL--------");
-            System.out.println("1 - Alta de Cliente");
-            System.out.println("2 - Actualizar Cliente");
-            System.out.println("3 - Eliminar Cliente");
-            System.out.println("4 - Menu Principal");
-            System.out.println("5 - Salir");
-
-            opcion = leer.nextInt();
-
-            switch (opcion) {
-                case 1: ; break;
-                case 2: ; break;
-                case 3: ; break;
-                case 4: MenuPrincipal.menuPrincipal(); break;
-                case 5: MenuPrincipal.clearScreen(); break;
-                default: System.out.println("Opción no válida. Por favor, elija una opción válida.");
-            }
-        } while (opcion < 1 || opcion > 5);
-
-    }
 
     public static void cargarCliente(Cliente cliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        cliente.setEstado(true);
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(cliente);
@@ -48,11 +21,26 @@ public class AreaComercial {
         }
     }
 
-    public static Cliente buscarCliente(int idCliente) {
+    public static Cliente buscarClienteId(int idCliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
             return entityManager.find(Cliente.class, idCliente);
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public static Cliente buscarClienteCUIT(String cuit) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Cliente cliente;
+        try {
+            entityManager.getTransaction().begin();
+            try {
+               return cliente = entityManager.createQuery("SELECT t FROM Cliente t WHERE cuit = :cuit", Cliente.class).setParameter("cuit", cuit).getSingleResult();
+           } catch (NoResultException cliente_null){
+               return null;
+           }
         } finally {
             entityManager.close();
         }
@@ -101,6 +89,41 @@ public class AreaComercial {
         } finally {
             entityManager.close();
         }
+    }
+
+    public static List<Software> obtenerServiciosClientes(Cliente cliente){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Software> servicios;
+        try {
+            entityManager.getTransaction().begin();
+            String jpql = "SELECT s FROM Software s WHERE s.cliente.idCliente = :clienteId";
+            servicios = entityManager.createQuery(jpql,Software.class)
+                    .setParameter("idCliente",cliente.getIdCliente())
+                    .getResultList();
+        } finally {
+            entityManager.close();
+        }
+        return servicios;
+    }
+
+    public static Cliente buscarClienteParametros(String consulta, String parametro, long valorInt, String valorString){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Cliente cliente;
+        try {
+            entityManager.getTransaction().begin();
+            if (valorString == null) {
+                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorInt).getSingleResult();
+            } else {
+                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorString).getSingleResult();
+            }
+            try {
+            } catch (NoResultException cliente_null){
+                return null;
+            }
+        } finally {
+            entityManager.close();
+        }
+        return cliente;
     }
 }
 

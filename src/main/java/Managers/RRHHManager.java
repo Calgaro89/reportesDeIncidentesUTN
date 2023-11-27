@@ -25,7 +25,7 @@ public class RRHHManager {
         System.out.println("4 - Eliminar Tecnico");
         System.out.println("5 - Menu Principal");
         System.out.println("6 - Salir");
-
+        System.out.print("Opción: ");
         opcion = leer.nextInt();
         Tecnico tecnico ;
 
@@ -55,10 +55,10 @@ public class RRHHManager {
 
                 // RRHHManager.actualizarDatosTecnico(tecnico);
                 ;break;
-            case 3: RRHHManager.obtenerTodosLosTecnicos().forEach(System.out::println); break;
+            case 3: Managers.LimpiarPantalla.limpiarPantalla();RRHHManager.obtenerTodosLosTecnicos().forEach(System.out::println); break;
             case 4: ; break;
-            case 5: MenuPrincipal.menuPrincipal(); break;
-            case 6: MenuPrincipal.clearScreen(); break;
+            case 5: Managers.LimpiarPantalla.limpiarPantalla();MenuPrincipal.menuPrincipal(); break;
+            case 6: Managers.LimpiarPantalla.limpiarPantalla(); break;
             default: System.out.println("Opción no válida. Por favor, elija una opción válida.");
         }while (opcion < 1 || opcion > 6);
 
@@ -97,15 +97,14 @@ public class RRHHManager {
 
     public static List<Tecnico> tecnicosPorConocimiento(String conocimiento) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Tecnico> tecnicos;
         try {
             entityManager.getTransaction().begin();
             String jpql = "SELECT t FROM Tecnico t WHERE t.conocimiento = :conocimiento";
-            Query query = entityManager.createQuery(jpql, Tecnico.class);
-            query.setParameter("conocimiento", conocimiento);
-            return query.getResultList();
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("conocimiento", conocimiento).getResultList();
         } finally {
             entityManager.close();
-        }
+        } return tecnicos;
     }
 
     public static void bajaTecnico(Tecnico tecnico) {
