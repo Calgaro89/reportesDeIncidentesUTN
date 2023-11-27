@@ -94,7 +94,7 @@ public class Scanners {
                     valorInt = leer.nextLong();
                     break;
                 case 6:
-                    MesaDeAyuda.ingresoMesaDeAyuda();
+                    AreaComercialFront.areaComercial();
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, elija una opción válida.");
