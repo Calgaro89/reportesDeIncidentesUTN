@@ -55,10 +55,10 @@ public class RRHHManager {
 
                 // RRHHManager.actualizarDatosTecnico(tecnico);
                 ;break;
-            case 3: Managers.LimpiarPantalla.limpiarPantalla();RRHHManager.obtenerTodosLosTecnicos().forEach(System.out::println); break;
+            case 3: ;RRHHManager.obtenerTodosLosTecnicos().forEach(System.out::println); break;
             case 4: ; break;
-            case 5: Managers.LimpiarPantalla.limpiarPantalla();MenuPrincipal.menuPrincipal(); break;
-            case 6: Managers.LimpiarPantalla.limpiarPantalla(); break;
+            case 5: ;MenuPrincipal.menuPrincipal(); break;
+            case 6: ; break;
             default: System.out.println("Opción no válida. Por favor, elija una opción válida.");
         }while (opcion < 1 || opcion > 6);
 

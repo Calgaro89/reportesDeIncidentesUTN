@@ -24,10 +24,10 @@ public class MenuPrincipal {
             opcion = leer.nextInt();
 
             switch (opcion) {
-                case 1: Managers.LimpiarPantalla.limpiarPantalla();MesaDeAyuda.ingresoMesaDeAyuda(); break;
-                case 2: Managers.LimpiarPantalla.limpiarPantalla();AreaComercialFront.areaComercial();break;
-                case 3: Managers.LimpiarPantalla.limpiarPantalla();RRHHManager.recursosHumanos(); break;
-                case 4: Managers.LimpiarPantalla.limpiarPantalla(); break;
+                case 1: MesaDeAyuda.ingresoMesaDeAyuda(); break;
+                case 2: AreaComercialFront.areaComercial();break;
+                case 3: RRHHManager.recursosHumanos(); break;
+                case 4: ; break;
                 default: System.out.println("Opción no válida. Por favor, elija una opción válida.");
             }
         } while (opcion < 1 || opcion > 4);

@@ -79,12 +79,12 @@ public class AreaComercialBack {
         }
     }
 
-    public static void eliminarCliente(int idCliente) {
+    public static void eliminarCliente(Cliente cliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Cliente cliente = entityManager.find(Cliente.class, idCliente);
-            entityManager.remove(cliente);
+            Cliente cliente_eliminar = entityManager.find(Cliente.class, cliente.getIdCliente());
+            entityManager.remove(cliente_eliminar);
             entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
@@ -106,13 +106,15 @@ public class AreaComercialBack {
         return servicios;
     }
 
-    public static Cliente buscarClienteParametros(String consulta, String parametro, long valorInt, String valorString){
+    public static Cliente buscarClienteParametros(String consulta, String parametro, int valorInt, long valorLong, String valorString){
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Cliente cliente;
         try {
             entityManager.getTransaction().begin();
-            if (valorString == null) {
+            if (valorString == null && valorInt != 0) {
                 cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorInt).getSingleResult();
+            } else if (valorString == null && valorInt == 0){
+                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorLong).getSingleResult();
             } else {
                 cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorString).getSingleResult();
             }

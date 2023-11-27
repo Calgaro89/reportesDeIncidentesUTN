@@ -38,10 +38,10 @@ public class Scanners {
         return cliente;
     }
 
-    public static void buscarClientesParametros() {
-        int opcion;
+    public static Cliente buscarClientesParametros() {
+        int opcion = 0;
+        Cliente cliente;
         do {
-            opcion = 0;
             System.out.println("-------AREA COMERCIAL--------");
             System.out.println("Buscar cliente por");
             System.out.println("1 - Nombre");
@@ -58,9 +58,9 @@ public class Scanners {
             }
             String consulta = null;
             String parametro = null;
-            long valorInt = 0;
+            long valorLong = 0;
+            int valorInt = 0;
             String valorString = null;
-            Cliente cliente;
 
             switch (opcion) {
                 case 1:
@@ -76,9 +76,9 @@ public class Scanners {
                     valorString = leer.next();
                     break;
                 case 3:
-                    consulta = "SELECT t FROM Cliente t WHERE iD = :iD";
-                    parametro = "iD";
-                    System.out.print("iD: ");
+                    consulta = "SELECT t FROM Cliente t WHERE idCliente = :idCliente";
+                    parametro = "idCliente";
+                    System.out.print("idCliente: ");
                     valorInt = leer.nextInt();
                     break;
                 case 4:
@@ -91,7 +91,7 @@ public class Scanners {
                     consulta = "SELECT t FROM Cliente t WHERE celular = :celular";
                     parametro = "celular";
                     System.out.print("celular: ");
-                    valorInt = leer.nextLong();
+                    valorLong = leer.nextLong();
                     break;
                 case 6:
                     AreaComercialFront.areaComercial();
@@ -99,73 +99,56 @@ public class Scanners {
                 default:
                     System.out.println("Opción no válida. Por favor, elija una opción válida.");
             }
-            cliente = AreaComercialBack.buscarClienteParametros(consulta, parametro, valorInt, valorString);
-            System.out.println(cliente);
-
-            System.out.println("-------AREA COMERCIAL--------");
-            System.out.println("Modificar datos del cliente: " + cliente.getNombre());
-            System.out.println("1. Si");
-            System.out.println("2. No");
-            System.out.print("Opcion: ");
-            int opcion2 = 0;
-            try {
-                opcion2 = leer.nextInt();
-            } catch (NumberFormatException error) {
-                System.out.println("Dato incorrecto");
-            }
-
-            switch (opcion2) {
-                case 1:
-                    modificarDatos(cliente);
-                    break;
-                case 2:
-                    break;
-                default:
-                    System.out.println("Opción no válida. Por favor, elija una opción válida.");
-            }
-        } while (opcion != 7);
+            cliente = AreaComercialBack.buscarClienteParametros(consulta, parametro, valorInt, valorLong, valorString);
+        } while (opcion == 6);
+        return cliente;
     }
 
     public static void modificarDatos(Cliente cliente) {
-            int opcion = 0;
-            System.out.println("-------AREA COMERCIAL--------");
-            System.out.println("Modificar: ");
-            System.out.println("1 - Nombre");
-            System.out.println("2 - CUIT");
-            System.out.println("3 - E-Mial");
-            System.out.println("4 - Celular");
-            System.out.println("5 - Volver al menu");
-            try {
-                System.out.print("Opcion: ");
-                opcion = leer.nextInt();
-            } catch (NumberFormatException error) {
+        int opcion = 0;
+        System.out.println();
+        System.out.println("-------AREA COMERCIAL--------");
+        System.out.println("Modificar: ");
+        System.out.println("1 - Nombre");
+        System.out.println("2 - CUIT");
+        System.out.println("3 - E-Mial");
+        System.out.println("4 - Celular");
+        System.out.println("5 - Volver al menu");
+        try {
+            System.out.print("Opcion: ");
+            opcion = leer.nextInt();
+        } catch (NumberFormatException error) {
+            modificarDatos(cliente);
+        }
+        switch (opcion) {
+            case 1:
+                System.out.print("Nuevo nombre: ");
+                cliente.setNombre(leer.next());
+                break;
+            case 2:
+                System.out.print("Nuevo CUIT: ");
+                cliente.setCuit(leer.next());
+                break;
+            case 3:
+                System.out.print("Nuevo e-mail: ");
+                cliente.setMail(leer.next());
+                break;
+            case 4:
+                System.out.print("Nuevo celular: ");
+                try {
+                    cliente.setCelular(leer.nextLong());
+                } catch (NumberFormatException error) {
+                    System.out.println("Formato celular incorrecto");
+                    modificarDatos(cliente);
+                }
+                break;
+            case 5:
+                buscarClientesParametros();
+                break;
+            default:
+                System.out.println("Opción no válida. Por favor, elija una opción válida.");
                 modificarDatos(cliente);
-            }
-            switch(opcion){
-                case 1:
-                    System.out.print("Nuevo nombre: ");
-                    cliente.setNombre(leer.next());
-                    break;
-                case 2:
-                    System.out.print("Nuevo CUIT: ");
-                    cliente.setCuit(leer.next());
-                    break;
-                case 3:
-                    System.out.print("Nuevo e-mail: ");
-                    cliente.setMail(leer.next());
-                    break;
-                case 4:
-                    System.out.print("Nuevo celular: ");
-                    try {
-                        cliente.setCelular(leer.nextLong());
-                    } catch (NumberFormatException error){
-                        System.out.println("Formato celular incorrecto");
-                        modificarDatos(cliente);
-                    }
-                    break;
-                case 5: buscarClientesParametros(); break;
-                default: System.out.println("Opción no válida. Por favor, elija una opción válida.");modificarDatos(cliente);
-            }
-            AreaComercialBack.actualizarDatosCliente(cliente);
+        }
+        AreaComercialBack.actualizarDatosCliente(cliente);
     }
 }
