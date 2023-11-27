@@ -1,7 +1,7 @@
 package Managers;
 
 import Entidades.Cliente;
-import Entidades.Software;
+import Entidades.ServicioCliente;
 import javax.persistence.*;
 import java.util.List;
 
@@ -9,23 +9,14 @@ public class AreaComercialBack {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
 
-    public static void cargarCliente(Cliente cliente) {
+    public static void cargarCliente() {
+        Cliente cliente = Scanners.crearCliente();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         cliente.setEstado(true);
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(cliente);
             entityManager.getTransaction().commit();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    public static Cliente buscarClienteId(int idCliente) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            return entityManager.find(Cliente.class, idCliente);
         } finally {
             entityManager.close();
         }
@@ -69,10 +60,11 @@ public class AreaComercialBack {
     }
 
     public static void actualizarDatosCliente(Cliente cliente) {
+        Cliente clienteUpdate = Scanners.modificarDatosClientes(cliente);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(cliente);
+            entityManager.merge(clienteUpdate);
             entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
@@ -91,19 +83,19 @@ public class AreaComercialBack {
         }
     }
 
-    public static List<Software> obtenerServiciosClientes(Cliente cliente){
+    public static List<ServicioCliente> obtenerServiciosClientes(Cliente cliente){
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<Software> servicios;
+        List<ServicioCliente> serviciosCliente;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT s FROM Software s WHERE s.cliente.idCliente = :clienteId";
-            servicios = entityManager.createQuery(jpql,Software.class)
+            String jpql = "SELECT s FROM ServicioCliente s WHERE s.cliente.idCliente = :idCliente";
+            serviciosCliente = entityManager.createQuery(jpql, ServicioCliente.class)
                     .setParameter("idCliente",cliente.getIdCliente())
                     .getResultList();
         } finally {
             entityManager.close();
         }
-        return servicios;
+        return serviciosCliente;
     }
 
     public static Cliente buscarClienteParametros(String consulta, String parametro, int valorInt, long valorLong, String valorString){
@@ -126,6 +118,23 @@ public class AreaComercialBack {
             entityManager.close();
         }
         return cliente;
+    }
+
+    public static void agregarServiciosClientes(ServicioCliente servicioCliente){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(servicioCliente);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public static void consultaCliente(Cliente cliente){
+        System.out.println("Datos Cliente:");
+        System.out.println(cliente);
+        AreaComercialBack.obtenerServiciosClientes(cliente).forEach(s -> System.out.println(s.getSoftware().getNombre()));
     }
 }
 

@@ -1,6 +1,7 @@
 package Managers;
 
 import Entidades.Cliente;
+import Entidades.ServicioCliente;
 import Entidades.Software;
 import org.example.MenuPrincipal;
 
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 
 public class MesaDeAyuda {
-    private static List<Software> softwares;
+    private static List<ServicioCliente> servicioCliente;
     private static Scanner leer = new Scanner(System.in);
 
     public static void ingresoMesaDeAyuda() {
@@ -59,7 +60,7 @@ public class MesaDeAyuda {
     }
 
     public static void mesaDeAyuda(Cliente cliente) {
-        softwares = AreaComercialBack.obtenerServiciosClientes(cliente);
+         servicioCliente = AreaComercialBack.obtenerServiciosClientes(cliente);
         int opcion;
         do {
             System.out.println("-------MESA DE AYUDA--------");
@@ -85,26 +86,26 @@ public class MesaDeAyuda {
     }
 
     public static void consultarSuscripciones(Cliente cliente) {
-        if (softwares.isEmpty()) {
+        if (servicioCliente.isEmpty()) {
             System.out.println("No posee servicios contratados.");
         } else {
             System.out.println("Servicios Contratados: ");
             int indice = 0;
-            for (Software software : softwares) {
+            for (ServicioCliente servicioCliente : servicioCliente) {
                 indice++;
-                System.out.println(indice + ". " + software.getNombre());
+                System.out.println(indice + ". " + servicioCliente.getSoftware().getNombre());
             }
         }
     }
 
     public static void reportarProblemas(Cliente cliente) {
-        if (softwares.isEmpty()) {
+        if (servicioCliente.isEmpty()) {
             System.out.println("No posee servicios contratados.");
         } else {
             System.out.println("Seleccione el número del servicio que presenta el conflicto");
             System.out.print("Servicio: ");
             int indice = leer.nextInt();
-            System.out.println("El conflicto esta en: " + softwares.get(indice));
+            System.out.println("El conflicto esta en: " + servicioCliente.get(indice));
         }
     }
     public static void consultarReportes(Cliente cliente){

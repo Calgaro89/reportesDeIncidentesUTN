@@ -11,8 +11,10 @@ public class ServicioTecnico {
     private int idServicioTecnico;
     @OneToOne
     @JoinColumn(name = "idTecnico")
-    private Tecnico idTecnico;
+    private Tecnico tecnico;
     @OneToOne
     @JoinColumn(name = "idSoftware")
-    private Software idSoftware;
+    private Software software;
+    @Basic
+    private boolean estado;
 }

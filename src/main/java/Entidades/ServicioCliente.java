@@ -12,8 +12,10 @@ public class ServicioCliente {
     private int idServicioCliente;
     @OneToOne
     @JoinColumn(name = "idCliente")
-    private Cliente idCliente;
+    private Cliente cliente;
     @OneToOne
     @JoinColumn(name = "idSoftware")
-    private Software idSoftware;
+    private Software software;
+    @Basic
+    private boolean estado;
 }
