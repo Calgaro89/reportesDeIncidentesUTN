@@ -158,10 +158,10 @@ public class Scanners {
                 System.out.println("Opción no válida. Por favor, elija una opción válida.");
                 modificarDatosClientes(cliente);
         }
-    return cliente;
-}
+        return cliente;
+    }
 
-    public static Software armarNuevoSoftware(){
+    public static Software armarNuevoSoftware() {
         System.out.println("-----Nuevo Software----");
         System.out.print("Nombre: ");
         String nombre = leer.next();
@@ -171,16 +171,16 @@ public class Scanners {
         return software;
     }
 
-    public static void agregarServiciosClientes(Cliente cliente){
+    public static void agregarServiciosClientes(Cliente cliente) {
         ServicioCliente servicioCliente = new ServicioCliente();
         servicioCliente.setCliente(cliente);
         int indice = 1;
         System.out.println("Servicios: ");
         List<Software> softwareList = InternoBack.listarSoftware();
-        for (Software software:softwareList){
-            if (software.isEstado()){
+        for (Software software : softwareList) {
+            if (software.isEstado()) {
                 System.out.println(indice + ". " + software.getNombre());
-                indice ++;
+                indice++;
             }
         }
         List<ServicioCliente> softwareCliente = AreaComercialBack.obtenerServiciosClientes(cliente);
@@ -189,14 +189,14 @@ public class Scanners {
         System.out.print("Indice software a agregar: ");
         try {
             opcion = leer.nextInt();
-        } catch (NumberFormatException error){
+        } catch (NumberFormatException error) {
             agregarServiciosClientes(cliente);
         }
-        servicioCliente.setSoftware(softwareList.get(opcion-1));
+        servicioCliente.setSoftware(softwareList.get(opcion - 1));
         AreaComercialBack.agregarServiciosClientes(servicioCliente);
     }
 
-    public static Tecnico crearTecnicoNuevo(){
+    public static Tecnico crearTecnicoNuevo() {
         Tecnico tecnico = new Tecnico();
         System.out.println("Ingrese nombre");
         tecnico.setNombre(leer.next());
@@ -208,44 +208,160 @@ public class Scanners {
         return tecnico;
     }
 
-        public static ServicioTecnico nuevosServicioTenicos(Tecnico tecnico, List<Software> softwaresPosibles){
+    public static ServicioTecnico nuevosServicioTenicos(Tecnico tecnico, List<Software> softwaresPosibles) {
         int indice = 1;
         ServicioTecnico servicioTecnico = new ServicioTecnico();
         System.out.println("Servicios: ");
-        for (Software software:softwaresPosibles){
-            if (software.isEstado()){
+        for (Software software : softwaresPosibles) {
+            if (software.isEstado()) {
                 System.out.println(indice + ". " + software.getNombre());
-                indice ++;
+                indice++;
             }
         }
         int opcion = 1;
         System.out.print("Indice software a agregar: ");
         try {
             opcion = leer.nextInt();
-        } catch (NumberFormatException error){
+        } catch (NumberFormatException error) {
             nuevosServicioTenicos(tecnico, softwaresPosibles);
         }
         servicioTecnico.setTecnico(tecnico);
-        servicioTecnico.setSoftware(softwaresPosibles.get(opcion-1));
+        servicioTecnico.setSoftware(softwaresPosibles.get(opcion - 1));
         return servicioTecnico;
     }
 
-    public static boolean otro(String text){
+    public static boolean otro(String text) {
         int opcion = 0;
-            do {
-                System.out.println();
-                System.out.println(text);
-                System.out.println("1. Si");
-                System.out.println("2. No");
-                System.out.print("Opción: ");
-                try {
-                    opcion = leer.nextInt();
-                } catch (NumberFormatException error) {
-                    otro(text);
-                }
-            } while (opcion <1 || opcion > 2);
-            return (opcion == 1);
+        do {
+            System.out.println();
+            System.out.println(text);
+            System.out.println("1. Si");
+            System.out.println("2. No");
+            System.out.print("Opción: ");
+            try {
+                opcion = leer.nextInt();
+            } catch (NumberFormatException error) {
+                otro(text);
+            }
+        } while (opcion < 1 || opcion > 2);
+        return (opcion == 1);
     }
 
+    public static Tecnico buscarTecnicoParametros() {
+        int opcion = 0;
+        Tecnico tecnico;
+        do {
+            System.out.println();
+            System.out.println("-------RRHH--------");
+            System.out.println("Buscar tecnico por");
+            System.out.println("1 - Nombre");
+            System.out.println("2 - Apellido");
+            System.out.println("3 - DNI");
+            System.out.println("4 - Volver al menu");
+            try {
+                System.out.print("Opcion: ");
+                opcion = leer.nextInt();
+            } catch (NumberFormatException error) {
+                buscarTecnicoParametros();
+            }
+            String consulta = null;
+            String parametro = null;
+            int valorInt = 0;
+            String valorString = null;
 
+            switch (opcion) {
+                case 1:
+                    consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
+                    parametro = "nombre";
+                    System.out.print("Nombre: ");
+                    valorString = leer.next();
+                    break;
+                case 2:
+                    consulta = "SELECT t FROM Apellido t WHERE apellido = :apellido";
+                    parametro = "apellido";
+                    System.out.print("apellido: ");
+                    valorString = leer.next();
+                    break;
+                case 3:
+                    consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
+                    parametro = "dni";
+                    System.out.print("DNI: ");
+                    valorInt = leer.nextInt();
+                    break;
+                case 4:
+                    RRHHManagerFront.recursosHumanos();
+                    break;
+                default:
+                    System.out.println("Opción no válida. Por favor, elija una opción válida.");
+            }
+            tecnico = RRHHManagerBack.buscarTecnicoParametros(consulta, parametro, valorInt, valorString);
+        } while (opcion == 6);
+        return tecnico;
+    }
+
+    public static Tecnico modificarDatosTecnicos(Tecnico tecnico) {
+        int opcion = 0;
+        System.out.println();
+        System.out.println("------- RRHH --------");
+        System.out.println("Modificar: ");
+        System.out.println("1 - Nombre");
+        System.out.println("2 - Apellido");
+        System.out.println("3 - dni");
+        System.out.println("4 - estado");
+        System.out.println("5 - Agregar Servicios");
+        System.out.println("6 - Quitar Servicios");
+        System.out.println("7 - Volver al menu");
+        try {
+            System.out.print("Opcion: ");
+            opcion = leer.nextInt();
+        } catch (NumberFormatException error) {
+            modificarDatosTecnicos(tecnico);
+        }
+        switch (opcion) {
+            case 1:
+                System.out.print("Nuevo nombre: ");
+                tecnico.setNombre(leer.next());
+                break;
+            case 2:
+                System.out.print("Nuevo apellido: ");
+                tecnico.setApellido(leer.next());
+                break;
+            case 3:
+                System.out.print("Nuevo dni: ");
+                try {
+                    tecnico.setDni(leer.nextInt());
+                } catch (NumberFormatException error) {
+                    System.out.println("Formato celular incorrecto");
+                    modificarDatosTecnicos(tecnico);
+                }
+                break;
+            case 4:
+                System.out.println("Estado: " + ((tecnico.isEstado()) ? "activo" : "inactivo"));
+                int opcion1 = 0;
+                do {
+                    System.out.println("Nuevo Estado: ");
+                    System.out.println("1- Activo");
+                    System.out.println("2- Inactivo");
+                    try {
+                        opcion1 = leer.nextInt();
+                    } catch (NumberFormatException error) {
+                        System.out.println("Formato incorrecto");
+                        modificarDatosTecnicos(tecnico);
+                    }
+                } while (opcion1 < 1 || opcion1 > 2);
+                tecnico.setEstado((opcion1 == 1));
+                break;
+            case 5:
+                RRHHManagerBack.agregarExpertiseTecnico(tecnico);
+                break;
+            //case 6: bajaServicios(cliente); break;
+            case 7:
+                buscarClientesParametros();
+                break;
+            default:
+                System.out.println("Opción no válida. Por favor, elija una opción válida.");
+                modificarDatosTecnicos(tecnico);
+        }
+        return tecnico;
+    }
 }

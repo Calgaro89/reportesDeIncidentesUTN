@@ -1,18 +1,22 @@
 package Managers;
 
+import Entidades.Cliente;
 import Entidades.ServicioTecnico;
 import Entidades.Software;
 import Entidades.Tecnico;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class RRHHManagerBack {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
+
     public static Tecnico cargarTecnico() {
         Tecnico tecnico = Scanners.crearTecnicoNuevo();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -26,7 +30,7 @@ public class RRHHManagerBack {
         return tecnico;
     }
 
-    public static void cargarExperticeTecnico(Tecnico nuevoTecnico){
+    public static void cargarExperticeTecnico(Tecnico nuevoTecnico) {
         InternoBack.listarSoftware();
         obtenerServiciosTecnicos(nuevoTecnico);
 
@@ -61,7 +65,8 @@ public class RRHHManagerBack {
             tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("conocimiento", conocimiento).getResultList();
         } finally {
             entityManager.close();
-        } return tecnicos;
+        }
+        return tecnicos;
     }
 
     public static void bajaTecnico(Tecnico tecnico) {
@@ -77,36 +82,37 @@ public class RRHHManagerBack {
     }
 
     public static void actualizarDatosTecnico(Tecnico tecnico) {
+        Tecnico tecnicoEditado = Scanners.modificarDatosTecnicos(tecnico);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(tecnico);
+            entityManager.merge(tecnicoEditado);
             entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
         }
     }
 
-    public static void eliminarTecnico(int idTecnico) {
+    public static void eliminarTecnico(Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Tecnico tecnico = entityManager.find(Tecnico.class, idTecnico);
-            entityManager.remove(tecnico);
+            Tecnico tecnicoEliminar = entityManager.find(Tecnico.class, tecnico.getIdTecnico());
+            entityManager.remove(tecnicoEliminar);
             entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
         }
     }
 
-    public static List<ServicioTecnico> obtenerServiciosTecnicos(Tecnico tecnico){
+    public static List<ServicioTecnico> obtenerServiciosTecnicos(Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<ServicioTecnico> servicioTecnico;
         try {
             entityManager.getTransaction().begin();
             String jpql = "SELECT s FROM ServicioTecnico s WHERE s.tecnico.idTecnico = :idTecnico";
             servicioTecnico = entityManager.createQuery(jpql, ServicioTecnico.class)
-                    .setParameter("idTecnico",tecnico.getIdTecnico())
+                    .setParameter("idTecnico", tecnico.getIdTecnico())
                     .getResultList();
         } finally {
             entityManager.close();
@@ -114,7 +120,7 @@ public class RRHHManagerBack {
         return servicioTecnico;
     }
 
-    public static void agregarServiciosTenicos(ServicioTecnico servicioTecnico){
+    public static void agregarServiciosTenicos(ServicioTecnico servicioTecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -127,17 +133,43 @@ public class RRHHManagerBack {
 
     public static void agregarExpertiseTecnico(Tecnico tecnico) {
         List<Software> softwareList = InternoBack.listarSoftware();
-        ServicioTecnico servicioTecnico = new ServicioTecnico();
         do {
-            List<ServicioTecnico> servicioTecnicos = RRHHManagerBack.obtenerServiciosTecnicos(tecnico);
-            List<Software> softwaresPosibles = new ArrayList<>();
-            for (Software softwares : softwareList)
-                if (!(servicioTecnicos.contains(softwares))) {
-                    softwaresPosibles.add(softwares);
-                }
-             servicioTecnico = Scanners.nuevosServicioTenicos(tecnico, softwaresPosibles);
-            RRHHManagerBack.agregarServiciosTenicos(servicioTecnico);
+            ServicioTecnico servicioTecnico;
+            List<Software> listaDeSoftwaresTecnico = RRHHManagerBack.obtenerServiciosTecnicos(tecnico)
+                    .stream()
+                    .map(ServicioTecnico::getSoftware)
+                    .collect(Collectors.toList());
+
+            List<Software> softwaresSinExperiencia = softwareList.stream()
+                    .filter(software -> !listaDeSoftwaresTecnico.contains(software))
+                    .distinct()
+                    .collect(Collectors.toList());
+            if (!(softwaresSinExperiencia.isEmpty())) {
+                servicioTecnico = Scanners.nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
+                RRHHManagerBack.agregarServiciosTenicos(servicioTecnico);
+            } else {
+                System.out.println("No hay softwares para agregar a la expertise del técnico");
+                RRHHManagerFront.recursosHumanos();
+            }
         } while (Scanners.otro("¿Desea agregar otra expertise?"));
+    }
+
+    public static Tecnico buscarTecnicoParametros(String consulta, String parametro, int valorInt, String valorString) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Tecnico tecnico;
+        try {
+            entityManager.getTransaction().begin();
+            if (valorString == null && valorInt != 0) {
+                tecnico = entityManager.createQuery(consulta, Tecnico.class).setParameter(parametro, valorInt).getSingleResult();
+            } else {
+                tecnico = entityManager.createQuery(consulta, Tecnico.class).setParameter(parametro, valorString).getSingleResult();
+            }
+        } catch (NoResultException cliente_null) {
+            return null;
+        } finally {
+            entityManager.close();
+        }
+        return tecnico;
     }
 }
 

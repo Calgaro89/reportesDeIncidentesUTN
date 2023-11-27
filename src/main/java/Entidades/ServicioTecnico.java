@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 public class ServicioTecnico {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int idServicioTecnico;
     @OneToOne
     @JoinColumn(name = "idTecnico")
