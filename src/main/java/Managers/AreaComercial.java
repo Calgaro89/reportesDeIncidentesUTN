@@ -1,14 +1,41 @@
 package Managers;
 
 import Entidades.Cliente;
+import org.example.MenuPrincipal;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.Scanner;
 
-public class ClienteManager {
+public class AreaComercial {
+    private static Scanner leer = new Scanner(System.in);
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
+
+    public static void areaComercial(){
+        int opcion;
+        do{
+            System.out.println("-------AREA COMERCIAL--------");
+            System.out.println("1 - Alta de Cliente");
+            System.out.println("2 - Actualizar Cliente");
+            System.out.println("3 - Eliminar Cliente");
+            System.out.println("4 - Menu Principal");
+            System.out.println("5 - Salir");
+
+            opcion = leer.nextInt();
+
+            switch (opcion) {
+                case 1: ; break;
+                case 2: ; break;
+                case 3: ; break;
+                case 4: MenuPrincipal.menuPrincipal(); break;
+                case 5: MenuPrincipal.clearScreen(); break;
+                default: System.out.println("Opción no válida. Por favor, elija una opción válida.");
+            }
+        } while (opcion < 1 || opcion > 5);
+
+    }
 
     public static void cargarCliente(Cliente cliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
