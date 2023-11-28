@@ -16,7 +16,7 @@ public class RRHHManagerFront {
             System.out.println();
             System.out.println("------- RRHH ------");
             System.out.println("1 - Alta de Tecnico");
-            System.out.println("2 - Actualizar Tenico");
+            System.out.println("2 - Actualizar Tecnico");
             System.out.println("3 - Lista de Tecnicos");
             System.out.println("4 - Eliminar Tecnico");
             System.out.println("5 - Menu Principal");
@@ -45,11 +45,13 @@ public class RRHHManagerFront {
                     MenuPrincipal.menuPrincipal();
                     break;
                 case 6:
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, elija una opción válida.");
             }
         }
         while (Scanners.otro("RRHH: ¿Desea realizar otra accion?"));
+        leer.nextLine();
     }
 }

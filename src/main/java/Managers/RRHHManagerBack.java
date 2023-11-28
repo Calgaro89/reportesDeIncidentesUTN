@@ -120,7 +120,7 @@ public class RRHHManagerBack {
         return servicioTecnico;
     }
 
-    public static void agregarServiciosTenicos(ServicioTecnico servicioTecnico) {
+    public static void agregarServiciosTecnicos(ServicioTecnico servicioTecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -146,7 +146,7 @@ public class RRHHManagerBack {
                     .collect(Collectors.toList());
             if (!(softwaresSinExperiencia.isEmpty())) {
                 servicioTecnico = Scanners.nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
-                RRHHManagerBack.agregarServiciosTenicos(servicioTecnico);
+                RRHHManagerBack.agregarServiciosTecnicos(servicioTecnico);
             } else {
                 System.out.println("No hay softwares para agregar a la expertise del técnico");
                 RRHHManagerFront.recursosHumanos();

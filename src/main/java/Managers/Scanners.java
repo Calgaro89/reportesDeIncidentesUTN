@@ -2,6 +2,7 @@ package Managers;
 
 import Entidades.*;
 
+import java.util.InputMismatchException;
 import java.util.List;
 
 public class Scanners {
@@ -162,12 +163,12 @@ public class Scanners {
     }
 
     public static Software armarNuevoSoftware() {
-        System.out.println("-----Nuevo Software----");
-        System.out.print("Nombre: ");
-        String nombre = leer.next();
-        Software software = new Software();
-        software.setNombre(nombre);
-        software.setEstado(true);
+            System.out.println("-----Nuevo Software----");
+            System.out.print("Nombre: ");
+            String nombre = leer.next();
+            Software software = new Software();
+            software.setNombre(nombre);
+            software.setEstado(true);
         return software;
     }
 
