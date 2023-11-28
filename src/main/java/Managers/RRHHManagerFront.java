@@ -3,55 +3,94 @@ package Managers;
 import Entidades.Tecnico;
 import org.example.MenuPrincipal;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class RRHHManagerFront {
     private static Tecnico tecnico = null;
     private static Scanner leer = new Scanner(System.in);
+
     public static void recursosHumanos() {
         int opcion;
+        try{
         do {
             System.out.println();
             System.out.println("------- RRHH ------");
-            System.out.println("1 - Alta de Tecnico");
-            System.out.println("2 - Actualizar Tecnico");
-            System.out.println("3 - Lista de Tecnicos");
-            System.out.println("4 - Eliminar Tecnico");
-            System.out.println("5 - Menu Principal");
-            System.out.println("6 - Salir");
+            System.out.println("1 - Nuevo Técnico");
+            System.out.println("2 - Técnico asociado");
+            System.out.println("3 - Menu Principal");
+            System.out.println("4 - Salir");
             System.out.print("Opción: ");
             opcion = leer.nextInt();
 
             switch (opcion) {
-
                 case 1:
                     Tecnico nuevoTecnico = RRHHManagerBack.cargarTecnico();
-                    RRHHManagerBack.agregarExpertiseTecnico(nuevoTecnico);
+                    RRHHManagerBack.armarServicioTecnico(nuevoTecnico);
                     break;
                 case 2:
-                    tecnico = Scanners.buscarTecnicoParametros();
-                    RRHHManagerBack.actualizarDatosTecnico(tecnico);
+                    tecnico = RRHHManagerBack.buscarTecnicoParametros();
+                    tecnicoAsociado(tecnico);
                     break;
                 case 3:
-                    RRHHManagerBack.obtenerTodosLosTecnicos().forEach(System.out::println);
-                    break;
-                case 4:
-                    tecnico = Scanners.buscarTecnicoParametros();
-                    RRHHManagerBack.eliminarTecnico(tecnico);
-                    break;
-                case 5:
                     MenuPrincipal.menuPrincipal();
                     break;
-                case 6:
+                case 4:
                     System.exit(0);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, elija una opción válida.");
             }
+        }while (MetodosControl.otro("RRHH: ¿Desea realizar otra accion?"));
+        } catch (InputMismatchException errorFormato) {
+            System.out.println("Formato incorrecto. Utilice números");
+            leer.next();
         }
-        while (Scanners.otro("RRHH: ¿Desea realizar otra accion?"));
         leer.nextLine();
+    }
+
+    public static void tecnicoAsociado(Tecnico tecnico) {
+        int opcion = 0;
+        try{
+        do {
+            System.out.println();
+            System.out.println("------- RRHH ------");
+            System.out.println("1 - Actualizar Datos Personales Tecnico");
+            System.out.println("2 - Baja Tecnico");
+            System.out.println("3 - Alta Expertise Tecnico");
+            System.out.println("4 - Baja Expertise Tecnico");
+            System.out.println("5 - Lista de Tecnicos por Expertise");
+            System.out.println("6 - Eliminar Tecnico");
+            System.out.print("Opción: ");
+            opcion = leer.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    RRHHManagerBack.actualizarDatosPersonalesTecnico(tecnico);
+                    break;
+                case 2:
+                    RRHHManagerBack.bajaTecnico(tecnico);
+                    break;
+                case 3:
+                    RRHHManagerBack.armarServicioTecnico(tecnico);
+                    break;
+                case 4:
+                    //RRHHManagerBack;
+                    break;
+                case 5:
+
+                    break;
+                case 6:
+                    RRHHManagerBack.eliminarTecnico(tecnico);
+                    break;
+                default:  System.out.println("Por favor, elija valores entre el 1 y el 6");
+
+            }
+        } while (MetodosControl.otro("¿Realiar otra accion?"));
+        } catch (InputMismatchException errorFormato) {
+            System.out.println("Formato incorrecto. Utilice números");
+            leer.next();
+        }
+        leer.next();
     }
 }

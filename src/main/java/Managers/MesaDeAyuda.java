@@ -2,10 +2,7 @@ package Managers;
 
 import Entidades.Cliente;
 import Entidades.ServicioCliente;
-import Entidades.Software;
 import org.example.MenuPrincipal;
-
-
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -26,7 +23,7 @@ public class MesaDeAyuda {
                 System.out.println("4. Salir");
                 System.out.print("Selecciona una opción: ");
                 int opcion = leer.nextInt();
-
+                leer.nextLine();
                 switch (opcion) {
                     case 1:
                         ingresoCuentaConCuit();
@@ -47,10 +44,8 @@ public class MesaDeAyuda {
             }
         }catch (InputMismatchException e){
             System.out.println("Opción no válida. Por favor, elige una opción válida.");
-            leer.nextLine();
             ingresoMesaDeAyuda();
         }
-        leer.nextLine();
     }
 
     public static void ingresoCuentaConCuit() {
@@ -59,7 +54,8 @@ public class MesaDeAyuda {
         do {
             System.out.println("Ingrese su cuit completo (xx-xxxxxxxx-x)");
             String cuit = leer.next();
-            if (validarFormatoCUIT(cuit)) {
+            leer.nextLine();
+            if (MetodosControl.validarFormatoCUIT(cuit)) {
                 cliente = AreaComercialBack.buscarClienteCUIT(cuit);
                 if (cliente == null) {
                     System.out.println("Cliente inexistente");
@@ -74,9 +70,6 @@ public class MesaDeAyuda {
         leer.nextLine();
     }
 
-    public static boolean validarFormatoCUIT(String cuit) {
-    return cuit.matches("\\d{2}-\\d{8}-\\d");
-    }
 
     public static void mesaDeAyuda(Cliente cliente) {
          servicioCliente = AreaComercialBack.obtenerServiciosClientes(cliente);
@@ -92,7 +85,7 @@ public class MesaDeAyuda {
                  System.out.println("4 - Menu Principal");
                  System.out.println("5 - Salir");
                  System.out.print("Opción: ");
-                 opcion = leer.nextInt();
+                 opcion = leer.nextInt(); leer.nextLine();
 
                  switch (opcion) {
                      case 1:
@@ -115,7 +108,6 @@ public class MesaDeAyuda {
                  }
              } while (opcion < 1 || opcion > 5);
          }catch(InputMismatchException e){
-             leer.nextLine();
              System.out.println("Opción no válida. Por favor, elija una opción válida.");
              mesaDeAyuda(cliente);
          }
@@ -125,7 +117,7 @@ public class MesaDeAyuda {
     public static void consultarSuscripciones(Cliente cliente) {
         if (servicioCliente.isEmpty()) {
             System.out.println("No posee servicios contratados.");
-            if (Scanners.otro("Mesa de Ayuda: ¿Desea realizar otra accion?")){
+            if (MetodosControl.otro("Mesa de Ayuda: ¿Desea realizar otra accion?")){
                 mesaDeAyuda(cliente);
             }else {System.exit(0);}
         } else {
@@ -136,22 +128,20 @@ public class MesaDeAyuda {
                 System.out.println(indice + ". " + servicioCliente.getSoftware().getNombre());
             }
         }
-        leer.nextLine();
     }
 
     public static void reportarProblemas(Cliente cliente) {
         if (servicioCliente.isEmpty()) {
             System.out.println("No posee servicios contratados.");
-            if (Scanners.otro("Mesa de Ayuda: ¿Desea realizar otra accion?")){
+            if (MetodosControl.otro("Mesa de Ayuda: ¿Desea realizar otra accion?")){
                 mesaDeAyuda(cliente);
             }else {System.exit(0);}
         } else {
             System.out.println("Seleccione el número del servicio que presenta el conflicto");
             System.out.print("Servicio: ");
-            int indice = leer.nextInt();
+            int indice = leer.nextInt(); leer.nextLine();
             System.out.println("El conflicto esta en: " + servicioCliente.get(indice));
         }
-        leer.nextLine();
     }
     public static void consultarReportes(Cliente cliente){
 

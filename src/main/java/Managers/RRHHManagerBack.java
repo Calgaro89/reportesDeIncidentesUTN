@@ -1,6 +1,5 @@
 package Managers;
 
-import Entidades.Cliente;
 import Entidades.ServicioTecnico;
 import Entidades.Software;
 import Entidades.Tecnico;
@@ -9,16 +8,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class RRHHManagerBack {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
+    public static java.util.Scanner leer = new java.util.Scanner(System.in);
 
     public static Tecnico cargarTecnico() {
-        Tecnico tecnico = Scanners.crearTecnicoNuevo();
+        Tecnico tecnico = crearTecnicoNuevo();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -30,27 +27,26 @@ public class RRHHManagerBack {
         return tecnico;
     }
 
-    public static void cargarExperticeTecnico(Tecnico nuevoTecnico) {
-        InternoBack.listarSoftware();
-        obtenerServiciosTecnicos(nuevoTecnico);
-
+    public static void armarServicioTecnico(Tecnico tecnico) {
+        do {
+            ServicioTecnico servicioTecnico;
+            List<Software> softwaresSinExperiencia = InternoBack.softwareDisponiblesAgregarTecnicos(tecnico);
+            if (!(softwaresSinExperiencia.isEmpty())) {
+                servicioTecnico = nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
+                RRHHManagerBack.cargarNuevoServiciosTecnicos(servicioTecnico);
+            } else {
+                System.out.println("No hay softwares para agregar a la expertise del técnico");
+                RRHHManagerFront.recursosHumanos();
+            }
+        } while (MetodosControl.otro("¿Desea agregar otra expertise?"));
     }
 
-    public static Tecnico buscarTecnico(int idTecnico) {
+    public static void cargarNuevoServiciosTecnicos(ServicioTecnico servicioTecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
-            return entityManager.find(Tecnico.class, idTecnico);
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    public static List<Tecnico> obtenerTodosLosTecnicos() {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            return entityManager.createQuery("SELECT t FROM Tecnico t", Tecnico.class).getResultList();
+            entityManager.persist(servicioTecnico);
+            entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
         }
@@ -71,9 +67,9 @@ public class RRHHManagerBack {
 
     public static void bajaTecnico(Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        tecnico.setEstado(false);
         try {
             entityManager.getTransaction().begin();
-            tecnico.setEstado(false);
             entityManager.merge(tecnico);
             entityManager.getTransaction().commit();
         } finally {
@@ -81,8 +77,8 @@ public class RRHHManagerBack {
         }
     }
 
-    public static void actualizarDatosTecnico(Tecnico tecnico) {
-        Tecnico tecnicoEditado = Scanners.modificarDatosTecnicos(tecnico);
+    public static void actualizarDatosPersonalesTecnico(Tecnico tecnico) {
+        Tecnico tecnicoEditado = modificarDatosTecnicos(tecnico);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -120,40 +116,6 @@ public class RRHHManagerBack {
         return servicioTecnico;
     }
 
-    public static void agregarServiciosTecnicos(ServicioTecnico servicioTecnico) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(servicioTecnico);
-            entityManager.getTransaction().commit();
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    public static void agregarExpertiseTecnico(Tecnico tecnico) {
-        List<Software> softwareList = InternoBack.listarSoftware();
-        do {
-            ServicioTecnico servicioTecnico;
-            List<Software> listaDeSoftwaresTecnico = RRHHManagerBack.obtenerServiciosTecnicos(tecnico)
-                    .stream()
-                    .map(ServicioTecnico::getSoftware)
-                    .collect(Collectors.toList());
-
-            List<Software> softwaresSinExperiencia = softwareList.stream()
-                    .filter(software -> !listaDeSoftwaresTecnico.contains(software))
-                    .distinct()
-                    .collect(Collectors.toList());
-            if (!(softwaresSinExperiencia.isEmpty())) {
-                servicioTecnico = Scanners.nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
-                RRHHManagerBack.agregarServiciosTecnicos(servicioTecnico);
-            } else {
-                System.out.println("No hay softwares para agregar a la expertise del técnico");
-                RRHHManagerFront.recursosHumanos();
-            }
-        } while (Scanners.otro("¿Desea agregar otra expertise?"));
-    }
-
     public static Tecnico buscarTecnicoParametros(String consulta, String parametro, int valorInt, String valorString) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Tecnico tecnico;
@@ -169,6 +131,161 @@ public class RRHHManagerBack {
         } finally {
             entityManager.close();
         }
+        return tecnico;
+    }
+
+    public static Tecnico crearTecnicoNuevo() {
+        Tecnico tecnico = new Tecnico();
+        System.out.println("Ingrese nombre");
+        tecnico.setNombre(leer.next());
+        System.out.println("Ingrese apellido");
+        tecnico.setApellido(leer.next());
+        System.out.println("Ingrese DNI");
+        tecnico.setDni(leer.nextInt());
+        tecnico.setEstado(true);
+        return tecnico;
+    }
+
+    public static ServicioTecnico nuevosServicioTenicos(Tecnico tecnico, List<Software> softwaresPosibles) {
+        int indice = 1;
+        ServicioTecnico servicioTecnico = new ServicioTecnico();
+        System.out.println("Servicios: ");
+        for (Software software : softwaresPosibles) {
+            if (software.isEstado()) {
+                System.out.println(indice + ". " + software.getNombre());
+                indice++;
+            }
+        }
+        int opcion = 1;
+        System.out.print("Indice software a agregar: ");
+        try {
+            opcion = leer.nextInt();
+        } catch (NumberFormatException error) {
+            nuevosServicioTenicos(tecnico, softwaresPosibles);
+        }
+        servicioTecnico.setTecnico(tecnico);
+        servicioTecnico.setSoftware(softwaresPosibles.get(opcion - 1));
+        servicioTecnico.setEstado(true);
+        return servicioTecnico;
+    }
+
+    public static Tecnico buscarTecnicoParametros() {
+        int opcion = 0;
+        Tecnico tecnico;
+        do {
+            System.out.println();
+            System.out.println("-------RRHH--------");
+            System.out.println("Buscar técnico por");
+            System.out.println("1 - Nombre");
+            System.out.println("2 - Apellido");
+            System.out.println("3 - DNI");
+            System.out.println("4 - Volver al menu");
+            try {
+                System.out.print("Opcion: ");
+                opcion = leer.nextInt();
+            } catch (NumberFormatException error) {
+                buscarTecnicoParametros();
+            }
+            String consulta = null;
+            String parametro = null;
+            int valorInt = 0;
+            String valorString = null;
+
+            switch (opcion) {
+                case 1:
+                    consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
+                    parametro = "nombre";
+                    System.out.print("Nombre: ");
+                    valorString = leer.next();
+                    break;
+                case 2:
+                    consulta = "SELECT t FROM Apellido t WHERE apellido = :apellido";
+                    parametro = "apellido";
+                    System.out.print("apellido: ");
+                    valorString = leer.next();
+                    break;
+                case 3:
+                    consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
+                    parametro = "dni";
+                    System.out.print("DNI: ");
+                    valorInt = leer.nextInt();
+                    break;
+                case 4:
+                    RRHHManagerFront.recursosHumanos();
+                    break;
+                default:
+                    System.out.println("Opción no válida. Por favor, elija una opción válida.");
+            }
+            tecnico = RRHHManagerBack.buscarTecnicoParametros(consulta, parametro, valorInt, valorString);
+        } while (opcion == 6);
+        return tecnico;
+    }
+
+    public static Tecnico modificarDatosTecnicos(Tecnico tecnico) {
+        int opcion = 0;
+        do {
+            System.out.println();
+            System.out.println("------- RRHH --------");
+            System.out.println("Modificar: ");
+            System.out.println("1 - Nombre");
+            System.out.println("2 - Apellido");
+            System.out.println("3 - dni");
+            System.out.println("4 - estado");
+            System.out.println("5 - Agregar Servicios");
+            System.out.println("6 - Quitar Servicios");
+            System.out.println("7 - Volver al menu");
+            try {
+                System.out.print("Opcion: ");
+                opcion = leer.nextInt();
+            } catch (NumberFormatException error) {
+                leer.next();
+                continue;
+            }
+            switch (opcion) {
+                case 1:
+                    System.out.print("Nuevo nombre: ");
+                    tecnico.setNombre(leer.next());
+                    break;
+                case 2:
+                    System.out.print("Nuevo apellido: ");
+                    tecnico.setApellido(leer.next());
+                    break;
+                case 3:
+                    System.out.print("Nuevo dni: ");
+                    try {
+                        tecnico.setDni(leer.nextInt());
+                    } catch (NumberFormatException error) {
+                        System.out.println("Formato celular incorrecto");
+                        leer.next();
+                        continue;
+                    }
+                    break;
+                case 4:
+                    System.out.println("Estado: " + ((tecnico.isEstado()) ? "activo" : "inactivo"));
+                    int opcion1 = 0;
+                    do {
+                        System.out.println("Nuevo Estado: ");
+                        System.out.println("1- Activo");
+                        System.out.println("2- Inactivo");
+                        try {
+                            opcion1 = leer.nextInt();
+                        } catch (NumberFormatException error) {
+                            System.out.println("Formato incorrecto. Por favor ingrese un número válido");
+                            leer.next();
+                            continue;
+                        }
+                    } while (opcion1 < 1 || opcion1 > 2);
+                    tecnico.setEstado((opcion1 == 1));
+                    break;
+                case 5:
+                    RRHHManagerBack.armarServicioTecnico(tecnico);
+                    break;
+                //case 6: bajaServicios(cliente); break;
+                default:
+                    System.out.println("Opción no válida. Por favor, elija una opción válida.");
+                    modificarDatosTecnicos(tecnico);
+            }
+        } while (MetodosControl.otro("Modificar otro parámetro del técnico"));
         return tecnico;
     }
 }

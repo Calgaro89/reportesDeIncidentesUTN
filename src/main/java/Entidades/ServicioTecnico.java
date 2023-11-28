@@ -3,8 +3,9 @@ package Entidades;
 import lombok.*;
 import javax.persistence.*;
 
-@Entity
+
 @Data
+@Entity
 public class ServicioTecnico {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -15,6 +16,7 @@ public class ServicioTecnico {
     @OneToOne
     @JoinColumn(name = "idSoftware")
     private Software software;
-    @Basic
     private boolean estado;
+
+
 }
