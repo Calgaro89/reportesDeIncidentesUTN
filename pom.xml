@@ -46,6 +46,13 @@
       <scope>provided</scope>
     </dependency>
 
+      <!-- Dependencia para enviar emails -->
+      <dependency>
+          <groupId>com.sun.mail</groupId>
+          <artifactId>javax.mail</artifactId>
+          <version>1.6.2</version> <!-- La versión puede variar -->
+      </dependency>
+
   </dependencies>
     <build>
         <plugins>
