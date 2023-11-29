@@ -152,17 +152,25 @@ public class AreaComercialBack {
     public static Cliente crearCliente() {
         System.out.println("AREA COMERCIAL: Nuevo cliente.");
         Cliente cliente = new Cliente();
-        cliente.setNombre(obtenerNombre());leer.nextLine();
-        cliente.setCuit(obtenerCuit());leer.nextLine();
-        cliente.setCelular(obtenerCelular());leer.nextLine();
-        cliente.setMail(obtenerEmail());leer.nextLine();
+        cliente.setNombre(obtenerNombre());
+        cliente.setCuit(obtenerCuit());
+        cliente.setCelular(obtenerCelular());
+        cliente.setMail(obtenerEmail());
         cliente.setEstado(true);
         return cliente;
     }
 
     private static String obtenerNombre() {
-        System.out.print("Nombre: ");
-        return leer.next();
+        System.out.println("Nombre: ");
+        String nombre = leer.next();
+        if (!nombre.matches("^[a-zA-Z]+$")){
+            do{
+                System.out.println("Nombre incorrecto, vuelva a intentarlo: ");
+                nombre = leer.next();
+                leer.nextLine();
+            }while(!nombre.matches("^[a-zA-Z]+$"));
+        }
+            return nombre;
     }
 
     private static String obtenerCuit() {
@@ -185,7 +193,7 @@ public class AreaComercialBack {
                 leer.nextLine();
                 celularCorrecto = true;
             } catch (InputMismatchException error) {
-                System.out.println("Celular Incorrecto");
+                System.out.println("Celular Incorrecto,vuelva a ingresarlo: ");
                 leer.nextLine();
             }
         } while (!celularCorrecto);

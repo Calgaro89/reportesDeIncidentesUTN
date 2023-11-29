@@ -10,7 +10,11 @@ public class MetodosControl {
     }
 
     public static boolean validarFormatoCUIT(String cuit) {
-        return cuit.matches("\\d{2}-\\d{8}-\\d");
+        if (cuit.matches("\\d{2}-\\d{8}-\\d")){
+            return true;
+        }
+        System.out.println("Cuit incorrecto, vuelva a ingresarlo en formato (xx-xxxxxxxx-x):");
+        return false;
     }
 
     public static boolean otro(String text) {
