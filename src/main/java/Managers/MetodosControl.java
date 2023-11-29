@@ -41,23 +41,5 @@ public class MetodosControl {
         return (opcion == 1);
     }
 
-    public static int leerOpcionIndices(int indiceMaximo) {
-        int indice = 0;
-        while (true) {
-            try {
-                System.out.print("Indice (1-" + indiceMaximo + "): ");
-                indice = leer.nextInt();leer.nextLine();
-                if (indice >= 1 && indice <= indiceMaximo) {
-                    break;
-                } else {
-                    System.out.println("Indice fuera de rango. Inténtelo de nuevo.");
-                }
-            } catch (InputMismatchException errorFormato) {
-                System.out.println("Opción no válida. Por favor, elija una opción válida.");
-                leer.nextLine();
-            }
-        }
-        return indice;
-    }
 
 }

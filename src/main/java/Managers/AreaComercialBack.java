@@ -152,63 +152,14 @@ public class AreaComercialBack {
     public static Cliente crearCliente() {
         System.out.println("AREA COMERCIAL: Nuevo cliente.");
         Cliente cliente = new Cliente();
-        cliente.setNombre(obtenerNombre());
-        cliente.setCuit(obtenerCuit());
-        cliente.setCelular(obtenerCelular());
-        cliente.setMail(obtenerEmail());
+        cliente.setNombre(GeneralBack.obtenerNombreOApellido("Nombre"));
+        cliente.setCuit(GeneralBack.obtenerCuit());
+        cliente.setCelular(GeneralBack.obtenerCelular());
+        cliente.setMail(GeneralBack.obtenerEmail());
         cliente.setEstado(true);
         return cliente;
     }
 
-    private static String obtenerNombre() {
-        System.out.println("Nombre: ");
-        String nombre = leer.next();
-        if (!nombre.matches("^[a-zA-Z]+$")){
-            do{
-                System.out.println("Nombre incorrecto, vuelva a intentarlo: ");
-                nombre = leer.next();
-                leer.nextLine();
-            }while(!nombre.matches("^[a-zA-Z]+$"));
-        }
-            return nombre;
-    }
-
-    private static String obtenerCuit() {
-        String cuit;
-        do {
-            System.out.print("Cuit: ");
-            cuit = leer.next();
-            leer.nextLine();
-        } while (!MetodosControl.validarFormatoCUIT(cuit));
-        return cuit;
-    }
-
-    private static long obtenerCelular() {
-        boolean celularCorrecto = false;
-        long celular = 0;
-        do {
-            try {
-                System.out.print("Celular: ");
-                celular = leer.nextLong();
-                leer.nextLine();
-                celularCorrecto = true;
-            } catch (InputMismatchException error) {
-                System.out.println("Celular Incorrecto,vuelva a ingresarlo: ");
-                leer.nextLine();
-            }
-        } while (!celularCorrecto);
-        return celular;
-    }
-
-    private static String obtenerEmail() {
-        String mail;
-        do {
-            System.out.print("E-Mail: ");
-            mail = leer.next();
-            leer.nextLine();
-        } while (!MetodosControl.validarEmail(mail));
-        return mail;
-    }
 
     // ------------- BUSCAR CLIENTE ------------------------------------------------------
     public static Cliente buscarClientesParametros(int opcion) {
@@ -221,40 +172,30 @@ public class AreaComercialBack {
             case 1:
                 consulta = "SELECT t FROM Cliente t WHERE nombre = :nombre";
                 parametro = "nombre";
-                System.out.print("Nombre: ");
-                valorString = leer.next();
-                leer.nextLine();
+                valorString = GeneralBack.obtenerNombreOApellido("Nombre");
                 break;
             case 2:
                 consulta = "SELECT t FROM Cliente t WHERE cuit = :cuit";
                 parametro = "cuit";
-                System.out.print("CUIT: ");
-                valorString = leer.next();
-                leer.nextLine();
+                valorString = GeneralBack.obtenerCuit();
                 break;
             case 3:
                 consulta = "SELECT t FROM Cliente t WHERE idCliente = :idCliente";
                 parametro = "idCliente";
-                System.out.print("idCliente: ");
-                valorInt = leer.nextInt();
-                leer.nextLine();
+                valorInt = GeneralBack.obtenerNumeroInt("idCliente");
                 break;
             case 4:
                 consulta = "SELECT t FROM Cliente t WHERE mail = :mail";
                 parametro = "mail";
-                System.out.print("email: ");
-                valorString = leer.next();
-                leer.nextLine();
+                valorString = GeneralBack.obtenerEmail();
                 break;
             case 5:
                 consulta = "SELECT t FROM Cliente t WHERE celular = :celular";
                 parametro = "celular";
-                System.out.print("celular: ");
-                valorLong = leer.nextLong();
-                leer.nextLine();
+                valorLong = GeneralBack.obtenerCelular();
                 break;
             case 6:
-                AreaComercialBack.areaComercial();
+                AreaComercialBack.ingresoAreaComercial();
                 break;
             default:
                 System.out.println("Opción no válida. Por favor, elija una opción válida.");
@@ -269,7 +210,7 @@ public class AreaComercialBack {
             if (MetodosControl.otro("¿Desea buscar por otro parámetro?")) {
                 ingresoBuscarClienteAsociado();
             } else {
-                areaComercial();
+                ingresoAreaComercial();
             }
         } else {
             System.out.println(cliente);
@@ -283,7 +224,7 @@ public class AreaComercialBack {
 
     public static void modificarDatosClientes(Cliente cliente) {
         do {
-            int opcion = MetodosControl.leerOpcionIndices(AreaComercialFront.mostrarMenuModificarCliente(cliente));
+            int opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarMenuModificarCliente(cliente));
             AreaComercialBack.procesarOpcionModificarDatosClientes(opcion, cliente);
         } while (MetodosControl.otro("Modificar otro parámetro?"));
     }
@@ -349,7 +290,7 @@ public class AreaComercialBack {
     public static void cargarNuevoServicioCliente(Cliente cliente){
         do{
             ServicioCliente servicioCliente;
-            List<Software> softwaresSinContratar = InternoBack.softwareDisponiblesClientesParaContratar(cliente);
+            List<Software> softwaresSinContratar = GeneralBack.softwareDisponiblesClientesParaContratar(cliente);
             if (!softwaresSinContratar.isEmpty()){
                 servicioCliente = armarServiciosClientes(cliente);
                 altaServiciosClientes(servicioCliente);
@@ -365,8 +306,8 @@ public class AreaComercialBack {
         ServicioCliente servicioCliente = new ServicioCliente();
         servicioCliente.setEstado(true);
         servicioCliente.setCliente(cliente);
-        List<Software> softwareList = InternoBack.softwareDisponiblesClientesParaContratar(cliente);
-        int opcion = seleccionarServicioParaEseCliente(mostrarServiciosDisponiblesParaEseCliente(softwareList));
+        List<Software> softwareList = GeneralBack.softwareDisponiblesClientesParaContratar(cliente);
+        int opcion = GeneralBack.leerOpcionIndices(mostrarServiciosDisponiblesParaEseCliente(softwareList));
         servicioCliente.setSoftware(softwareList.get(opcion - 1));
         return servicioCliente;
     }
@@ -382,29 +323,12 @@ public class AreaComercialBack {
         } return maximo;
     }
 
-    private static int seleccionarServicioParaEseCliente(int maximo) {
-        int opcion = 0;
-        String text = ". Indice incorrecto (1 a " + maximo + ")";
-        try {
-            do {
-                System.out.print("Indice Software: ");
-                opcion = leer.nextInt();
-                leer.nextLine();
-                System.out.print((opcion > maximo) ? text : "");
-            } while (opcion < 1 || opcion > maximo);
-        }  catch (InputMismatchException error) {
-            System.out.println("Formato indice Incorrecto. Cárguelo nuevamente:");
-            seleccionarServicioParaEseCliente(maximo);
-        }
-        return opcion;
-    }
-
 
     // ------------- DAR DE BAJA SERVICIO CLIENTE -------------------------------------------
     public static ServicioCliente armadoServicioClienteParaBaja(Cliente cliente) {
         List<Software> softwaresCliente = listarSoftwareDeCliente(cliente);
         int maximo = mostrarServiciosDisponiblesParaEseCliente(softwaresCliente);
-        int indice = seleccionarServicioParaEseCliente(maximo);
+        int indice = GeneralBack.leerOpcionIndices(maximo);
         Software softwareBaja = softwaresCliente.get(indice - 1);
         ServicioCliente servicioClienteEliminar = AreaComercialBack.obtenerServiciosClientes(cliente).stream()
                 .filter(servicioCliente -> servicioCliente.getSoftware().equals(softwareBaja))
@@ -425,7 +349,7 @@ public class AreaComercialBack {
     public static void ingresoClienteAsociado(Cliente cliente) {
         int opcion;
         do {
-            opcion = MetodosControl.leerOpcionIndices(AreaComercialFront.mostrarTablaClientesAsociado(cliente));
+            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaClientesAsociado(cliente));
             opcionesTablaClienteAsociado(opcion, cliente);
         } while (opcion != 7 && opcion != 8) ;
     }
@@ -438,7 +362,7 @@ public class AreaComercialBack {
                 case 4:consultarDatosCliente(cliente);break;
                 case 5:cargarNuevoServicioCliente(cliente);break;
                 case 6:bajaServiciosCliente(cliente);break;
-                case 7: areaComercial();break;
+                case 7: ingresoAreaComercial();break;
                 case 8:System.exit(0);break;
             }
     }
@@ -453,10 +377,10 @@ public class AreaComercialBack {
         }
     }
 
-    public static void areaComercial(){
+    public static void ingresoAreaComercial(){
         int opcion;
         do{
-            opcion = MetodosControl.leerOpcionIndices(AreaComercialFront.mostrarTablaAreaComercial());
+            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaAreaComercial());
             metodosTablaAreaComercial(opcion);
         } while (opcion != 4 && opcion != 3);
     }
@@ -465,7 +389,7 @@ public class AreaComercialBack {
     public static void ingresoBuscarClienteAsociado(){
         int opcion;
         do{
-            opcion = MetodosControl.leerOpcionIndices(AreaComercialFront.mostrarTablaBuscarClienteAsociado());
+            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaBuscarClienteAsociado());
             controlResultadoBusquedaCliente(buscarClientesParametros(opcion));
         } while (opcion != 6);
     }

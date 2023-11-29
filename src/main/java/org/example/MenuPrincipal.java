@@ -1,5 +1,4 @@
 package org.example;
-import Entidades.Software;
 import Managers.*;
 
 import java.util.*;
@@ -29,13 +28,13 @@ public class MenuPrincipal {
                         MesaDeAyuda.ingresoMesaDeAyuda();
                         break;
                     case 2:
-                        AreaComercialBack.areaComercial();
+                        AreaComercialBack.ingresoAreaComercial();
                         break;
                     case 3:
-                        RRHHManagerFront.recursosHumanos();
+                        RRHHManagerBack.ingresoIndiceRRHH();
                         break;
                     case 4:
-                        InternoBack.cargarSoftware();
+                        GeneralBack.cargarSoftware();
                         break;
                     case 5:
                         System.exit(0);
