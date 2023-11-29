@@ -1,10 +1,8 @@
 package Managers;
 
 import Entidades.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import org.example.MenuPrincipal;
+import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +10,8 @@ public class InternoBack {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
     public static java.util.Scanner leer = new java.util.Scanner(System.in);
 
-    public static void cargarSoftware(Software software){
+    public static void cargarSoftware() {
+        Software software = armarNuevoSoftware();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             entityManager.getTransaction().begin();
@@ -21,6 +20,24 @@ public class InternoBack {
         } finally {
             entityManager.close();
         }
+        System.out.println("Software agregado con exito.");
+        MenuPrincipal.menuPrincipal();
+    }
+
+    public static Software armarNuevoSoftware() {
+        System.out.println("-----Nuevo Software----");
+        String nombre;
+        do {
+            System.out.print("Nombre: ");
+            nombre = leer.nextLine();
+            if (!nombre.matches("^[a-zA-Z]+( [a-zA-Z]+)*$")){
+                System.out.println("Nombre incorrecto, vuelva a ingresarlo: ");
+            }
+        }while(!nombre.matches("^[a-zA-Z]+( [a-zA-Z]+)*$"));
+        Software software = new Software();
+        software.setNombre(nombre);
+        software.setEstado(true);
+        return software;
     }
 
     public static List<Software> listarSoftware() {
@@ -59,16 +76,6 @@ public class InternoBack {
                 .distinct()
                 .collect(Collectors.toList());
         return softwaresSinExperiencia;
-    }
-
-    public static Software armarNuevoSoftware() {
-        System.out.println("-----Nuevo Software----");
-        System.out.print("Nombre: ");
-        String nombre = leer.next();
-        Software software = new Software();
-        software.setNombre(nombre);
-        software.setEstado(true);
-        return software;
     }
 
 }

@@ -20,16 +20,24 @@ public class MetodosControl {
     public static boolean otro(String text) {
         int opcion = 0;
         do {
+            boolean comprobacion = true;
             System.out.println(text);
             System.out.println("1. Si");
             System.out.println("2. No");
             System.out.print("Opción: ");
             try {
                 opcion = leer.nextInt();
-            } catch (NumberFormatException error) {
-                otro(text);
+            } catch (InputMismatchException error) {
+                System.out.println("Opcion incorrecta, vuelva a intentarlo: ");
+                comprobacion = false;
+                leer.nextLine();
             }
-        } while (opcion < 1 || opcion > 2);
+
+            if ((opcion < 1 || opcion > 2) && comprobacion){System.out.println("Opcion incorrecta, vuelva a intentarlo: ");}
+
+            if (opcion==2){System.exit(0);}
+
+        } while (opcion != 1);
         return (opcion == 1);
     }
 

@@ -86,7 +86,7 @@ public class RRHHManagerFront {
                 default:  System.out.println("Por favor, elija valores entre el 1 y el 6");
 
             }
-        } while (MetodosControl.otro("¿Realiar otra accion?"));
+        } while (MetodosControl.otro("¿Realizar otra accion?"));
         } catch (InputMismatchException errorFormato) {
             System.out.println("Formato incorrecto. Utilice números");
             leer.next();

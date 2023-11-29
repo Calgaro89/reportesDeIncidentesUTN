@@ -35,7 +35,7 @@ public class MenuPrincipal {
                         RRHHManagerFront.recursosHumanos();
                         break;
                     case 4:
-                        InternoBack.armarNuevoSoftware();
+                        InternoBack.cargarSoftware();
                         break;
                     case 5:
                         System.exit(0);
