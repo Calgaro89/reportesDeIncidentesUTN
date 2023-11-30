@@ -284,12 +284,9 @@ public class RRHHManagerBack {
                 inicioBajaServicioTecnico(tecnico);
                 break;
             case 5:
-                // System.out.println("5 - Lista de Tecnicos por Expertise");
-                break;
-            case 6:
                 RRHHManagerBack.eliminarTecnico(tecnico);
                 break;
-            case 7:
+            case 6:
                 RRHHManagerBack.ingresoIndiceRRHH();
                 break;
         }
@@ -364,7 +361,6 @@ public class RRHHManagerBack {
                 .findFirst()
                 .orElse(null);
     }
-
 }
 
 

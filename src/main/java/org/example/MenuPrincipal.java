@@ -25,7 +25,7 @@ public class MenuPrincipal {
 
                 switch (opcion) {
                     case 1:
-                        MesaDeAyuda.ingresoMesaDeAyuda();
+                        MesaAyudaBack.ingresoMesaAyuda();
                         break;
                     case 2:
                         AreaComercialBack.ingresoAreaComercial();

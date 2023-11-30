@@ -31,10 +31,9 @@ public class RRHHManagerFront {
         System.out.println("2 - Baja Tecnico");
         System.out.println("3 - Alta Expertise Tecnico");
         System.out.println("4 - Baja Expertise Tecnico");
-        System.out.println("5 - Lista de Tecnicos por Expertise");
-        System.out.println("6 - Eliminar Tecnico");
-        System.out.println("7 - Volver");
-        return 7;
+        System.out.println("5 - Eliminar Tecnico");
+        System.out.println("6 - Volver");
+        return 6;
     }
 
 

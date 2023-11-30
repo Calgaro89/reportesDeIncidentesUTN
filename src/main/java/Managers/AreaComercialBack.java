@@ -205,7 +205,6 @@ public class AreaComercialBack {
 
     private static void controlResultadoBusquedaCliente(Cliente cliente) {
         if (cliente == null) {
-            System.out.println("-------------------");
             System.out.println("Cliente inexistente");
             if (MetodosControl.otro("¿Desea buscar por otro parámetro?")) {
                 ingresoBuscarClienteAsociado();
@@ -223,10 +222,12 @@ public class AreaComercialBack {
     // ------------- MODIFICAR DATOS CLIENTE -----------------------------------------------
 
     public static void modificarDatosClientes(Cliente cliente) {
+        int maximoOvolver, opcion;
         do {
-            int opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarMenuModificarCliente(cliente));
+             maximoOvolver = AreaComercialFront.mostrarMenuModificarCliente(cliente);
+             opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
             AreaComercialBack.procesarOpcionModificarDatosClientes(opcion, cliente);
-        } while (MetodosControl.otro("Modificar otro parámetro?"));
+        } while (opcion != maximoOvolver);
     }
 
     public static void procesarOpcionModificarDatosClientes(int opcion, Cliente cliente) {
@@ -347,11 +348,12 @@ public class AreaComercialBack {
     // ------------- INGRESO ACCIONES CLIENTE ASOCIADO -------------------------------------
 
     public static void ingresoClienteAsociado(Cliente cliente) {
-        int opcion;
+        int opcion, maximoOvolver;
         do {
-            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaClientesAsociado(cliente));
+            maximoOvolver = AreaComercialFront.mostrarTablaClientesAsociado(cliente);
+            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
             opcionesTablaClienteAsociado(opcion, cliente);
-        } while (opcion != 7 && opcion != 8) ;
+        } while (opcion != maximoOvolver);
     }
 
     public static void opcionesTablaClienteAsociado(int opcion, Cliente cliente) {
@@ -378,20 +380,22 @@ public class AreaComercialBack {
     }
 
     public static void ingresoAreaComercial(){
-        int opcion;
+        int opcion, maximoOvolver;
         do{
-            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaAreaComercial());
+            maximoOvolver = AreaComercialFront.mostrarTablaAreaComercial();
+            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
             metodosTablaAreaComercial(opcion);
-        } while (opcion != 4 && opcion != 3);
+        } while (opcion != maximoOvolver-1);
     }
 
     // ------------- BUSCAR CIUDADO ASOCIADO INGRESO AREA COMERCIAL---------------------------
     public static void ingresoBuscarClienteAsociado(){
-        int opcion;
+        int opcion, maximoOvolver;
         do{
-            opcion = GeneralBack.leerOpcionIndices(AreaComercialFront.mostrarTablaBuscarClienteAsociado());
+            maximoOvolver = AreaComercialFront.mostrarTablaBuscarClienteAsociado();
+            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
             controlResultadoBusquedaCliente(buscarClientesParametros(opcion));
-        } while (opcion != 6);
+        } while (opcion != maximoOvolver);
     }
 }
 
