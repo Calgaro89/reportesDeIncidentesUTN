@@ -1,15 +1,8 @@
 package Managers;
 
-import Entidades.ServicioCliente;
-import Entidades.ServicioTecnico;
-import Entidades.Software;
-import Entidades.Tecnico;
+import Entidades.*;
 import org.example.MenuPrincipal;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -171,7 +164,7 @@ public class RRHHManagerBack {
         Tecnico tecnico = new Tecnico();
         tecnico.setNombre(GeneralBack.obtenerNombreOApellido("Nombre"));
         tecnico.setApellido(GeneralBack.obtenerNombreOApellido("Apellido"));
-        tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));
+        tecnico.setDni(MetodosControl.controlLargoDNI("DNI"));
         tecnico.setEstado(true);
         return tecnico;
     }
@@ -233,7 +226,7 @@ public class RRHHManagerBack {
             case 3:
                 consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
                 parametro = "dni";
-                valorInt = GeneralBack.controlLargoDNI("DNI");
+                valorInt = MetodosControl.controlLargoDNI("DNI");
                 break;
             case 4:
                 RRHHManagerBack.ingresoIndiceRRHH();
@@ -315,7 +308,7 @@ public class RRHHManagerBack {
                     tecnico.setNombre(GeneralBack.obtenerNombreOApellido("Apellido"));
                     break;
                 case 3:
-                    tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));
+                    tecnico.setDni(MetodosControl.controlLargoDNI("DNI"));
                     break;
                 case 4:
                     tecnico.setEstado((GeneralBack.cambiarEstadoTecnico()));

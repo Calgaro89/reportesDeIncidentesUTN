@@ -1,6 +1,9 @@
 package Managers;
 
+import org.example.MenuPrincipal;
+
 import java.util.InputMismatchException;
+import java.util.function.Consumer;
 
 public class MetodosControl {
     public static java.util.Scanner leer = new java.util.Scanner(System.in);
@@ -35,11 +38,21 @@ public class MetodosControl {
 
             if ((opcion < 1 || opcion > 2) && comprobacion){System.out.println("Opcion incorrecta, vuelva a intentarlo: ");}
 
-            if (opcion==2){System.exit(0);}
+            if (opcion==2){ MenuPrincipal.menuPrincipal();}
 
         } while (opcion != 1);
         return (opcion == 1);
     }
 
+    public static int controlLargoDNI(String titulo) {
+        String numeroString;
+        int numeroInt;
+        do {
+            numeroInt = GeneralBack.obtenerNumeroInt(titulo);
+            numeroString = String.valueOf(GeneralBack.obtenerNumeroInt(titulo));
 
+            ((Consumer<String>) s -> {if (s.length() > 8) {System.out.println("El DNI debe tener maximo 8 caracteres.");}}).accept(numeroString);
+        } while (numeroString.length() == 8);
+        return numeroInt;
+    }
 }

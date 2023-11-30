@@ -147,15 +147,7 @@ public class GeneralBack {
         return numero;
     }
 
-    public static int controlLargoDNI(String titutlo) {
-        String numeroString;
-        int numeroInt;
-        do {
-            numeroInt = obtenerNumeroInt(titutlo);
-            numeroString = String.valueOf(obtenerNumeroInt(titutlo));
-        } while (numeroString.length() == 8);
-        return numeroInt;
-    }
+
 
     public static boolean cambiarEstadoTecnico() {
         System.out.println("Nuevo Estado: ");
