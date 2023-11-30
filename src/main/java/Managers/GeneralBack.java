@@ -190,5 +190,23 @@ public class GeneralBack {
         return indice;
     }
 
+    public static String obtenerDescripcionIncidente(){
+        String descripcion;
+        do{
+            System.out.println("Descripcion incidente (Maximo 100 caracteres):");
+            descripcion = leer.next();
+            leer.nextLine();
+        }while (descripcion.length()>100);
+        return descripcion;
+    }
+
+    public static String tipoComunicacionReporteIncidente(){
+        System.out.println("Vía comunicacion preferida");
+        System.out.println("1- celular");
+        System.out.println("2- email");
+        int opcion = leerOpcionIndices(2);
+        return ((opcion == 1)? "celular":"email");
+    }
+
 
 }

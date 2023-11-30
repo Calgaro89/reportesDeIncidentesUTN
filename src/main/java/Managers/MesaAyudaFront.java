@@ -16,8 +16,9 @@ public class MesaAyudaFront {
         System.out.println("MESA DE AYUDA: " + cliente.getNombre());
         System.out.println("1 - Consultar Suscripciones");
         System.out.println("2 - Reportar Problemas");
-        System.out.println("3 - Consultar Reportes");
-        System.out.println("4 - Menu Principal");
-        return 4;
+        System.out.println("3 - Consultar Reportes Pendientes");
+        System.out.println("4 - Consultar Historial Reportes");
+        System.out.println("5 - Menu Principal");
+        return 5;
     }
 }
