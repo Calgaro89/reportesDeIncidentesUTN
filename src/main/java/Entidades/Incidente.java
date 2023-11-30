@@ -11,7 +11,6 @@ public class Incidente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
-    @Column
     private String descripcion;
     @OneToOne
     @Nullable
@@ -24,16 +23,11 @@ public class Incidente {
     @Nullable
     @JoinColumn(name = "idTecnico")
     private Tecnico tecnico;
-    @Column
     private LocalDateTime fechaIngreso;
-    @Column
     @Nullable
     private LocalDateTime fechaFin;
-    @Column
     @Nullable
     private int tiempoResolucion;
-    @Column
     private String tipoComunicacion;
-    @Column
     private boolean estado;
 }

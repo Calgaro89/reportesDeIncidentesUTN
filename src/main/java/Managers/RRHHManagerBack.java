@@ -1,5 +1,6 @@
 package Managers;
 
+import Entidades.ServicioCliente;
 import Entidades.ServicioTecnico;
 import Entidades.Software;
 import Entidades.Tecnico;
@@ -96,13 +97,13 @@ public class RRHHManagerBack {
 
     // ------------- LISTAR TECNICOS POR CONOCMIENTO -------------------------------------------------
 
-    public static List<Tecnico> tecnicosPorConocimiento(String conocimiento) {
+    public static List<Tecnico> tecnicosPorConocimiento(ServicioCliente servicioCliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Tecnico> tecnicos;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT t FROM Tecnico t WHERE t.conocimiento = :conocimiento";
-            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("conocimiento", conocimiento).getResultList();
+            String jpql = "SELECT t FROM Tecnico t JOIN t.serviciosTecnicos st WHERE st.software = :software";
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", servicioCliente.getSoftware()).getResultList();
         } finally {
             entityManager.close();
         }
