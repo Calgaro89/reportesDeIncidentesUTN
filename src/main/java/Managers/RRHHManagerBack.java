@@ -88,13 +88,13 @@ public class RRHHManagerBack {
 
     // ------------- LISTAR TECNICOS POR CONOCMIENTO -------------------------------------------------
 
-    public static List<Tecnico> tecnicosPorConocimiento(ServicioCliente servicioCliente) {
+    public static List<Tecnico> tecnicosPorConocimiento(Software software) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Tecnico> tecnicos;
         try {
             entityManager.getTransaction().begin();
             String jpql = "SELECT t FROM Tecnico t JOIN t.serviciosTecnicos st WHERE st.software = :software";
-            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", servicioCliente.getSoftware()).getResultList();
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software.getNombre()).getResultList();;
         } finally {
             entityManager.close();
         }
@@ -182,9 +182,14 @@ public class RRHHManagerBack {
             case 2: ingresoIndiceTecnicoAsocaido(ingresoBusquedaTecnicoPorParametro());
                 break;
             case 3:
-                MenuPrincipal.menuPrincipal();
+                    IncidenteManagerBack.listarTecnicosPorCantidadIncidentesResueltos(Scanners.obtenerLocalDate("Fecha inicio busqueda"),Scanners.obtenerLocalDate("Fecha fin de busqueda"));
+                    break;
+            case 4: IncidenteManagerBack.seleccionarSoftware();
+                    break;
+            case 5:
+                MenuPrincipal.mostrarMenuPrincipal();
                 break;
-            case 4:
+            case 6:
                 System.exit(0);
                 break;
         }

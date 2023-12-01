@@ -36,7 +36,7 @@ public class MesaAyudaBack {
                         System.out.println("Seleccionaste: Contratar servicios");
                         break;
                     case 3:
-                        MenuPrincipal.menuPrincipal();
+                        MenuPrincipal.mostrarMenuPrincipal();
                         break;
                     case 4:
                         System.out.println("¡Hasta luego!");

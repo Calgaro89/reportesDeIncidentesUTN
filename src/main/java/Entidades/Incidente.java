@@ -25,7 +25,7 @@ public class Incidente {
     private ServicioCliente servicioCliente;
 
     @ManyToOne
-    @Column(nullable = true)
+    @Nullable
     @JoinColumn(name = "idTecnico")
     private Tecnico tecnico;
 

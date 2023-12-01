@@ -15,7 +15,7 @@ public class MetodosControl {
             System.out.println("2. No");
             System.out.print("Opción: ");
             opcion = GeneralBack.controlOpcionIndices(2);
-            if (opcion==2){ MenuPrincipal.menuPrincipal();}
+            if (opcion==2){ MenuPrincipal.inicioPrograma();}
         } while (opcion != 1);
         return (true);
     }

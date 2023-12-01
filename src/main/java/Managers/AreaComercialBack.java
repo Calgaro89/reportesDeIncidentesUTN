@@ -343,7 +343,7 @@ public class AreaComercialBack {
         switch (opcion) {
             case 1: cargarCliente();break;
             case 2: ingresoBuscarClienteAsociado(); break;
-            case 3: MenuPrincipal.menuPrincipal();break;
+            case 3: MenuPrincipal.mostrarMenuPrincipal();break;
             case 4: System.exit(0); break;
         }
     }

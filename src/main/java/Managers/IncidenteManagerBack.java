@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,14 +30,12 @@ public class IncidenteManagerBack {
         }
     }
 
-
     // ------------- ASIGNAR UN TECNICO A UN INCIDENTE ---------------------------------------
     public static void asignarTecnicoIncidente(Incidente incidente) {
-        List<Tecnico> tecnicos = RRHHManagerBack.tecnicosPorConocimiento(incidente.getServicioCliente());
-        Software softwareIncidente = incidente.getServicioCliente().getSoftware();
-        Map<Tecnico, Double> tiempoPromedioPorTecnico = obtenerListaOrdenadaPromediosResolucionTecnicos(tecnicos, softwareIncidente);
+        List<Tecnico> tecnicos = RRHHManagerBack.tecnicosPorConocimiento(incidente.getServicioCliente().getSoftware());
+        Map<Tecnico, Double> tiempoPromedioPorTecnico = obtenerListaOrdenadaPromediosResolucionTecnicos(tecnicos, incidente.getServicioCliente().getSoftware());
 
-        Map.Entry<Tecnico, Double> mejorTecnicoEntry = encontrarMejorTecnicoPosibleDesocupado(tiempoPromedioPorTecnico, softwareIncidente);
+        Map.Entry<Tecnico, Double> mejorTecnicoEntry = encontrarMejorTecnicoPosibleDesocupado(tiempoPromedioPorTecnico, incidente.getServicioCliente().getSoftware());
         Tecnico tecnico;
         Double tiempoPromedio;
         if (mejorTecnicoEntry != null) {
@@ -106,10 +105,10 @@ public class IncidenteManagerBack {
     }
 
     public static Map.Entry<Tecnico, Double> encontrarMejorTecnicoPosibleDesocupado(Map<Tecnico, Double> tiempoPromedioPorTecnico, Software softwareIncidente) {
-            return tiempoPromedioPorTecnico.entrySet().stream()
-                    .filter(entry -> obtenerTodosIncidentesNoResueltos(softwareIncidente, entry.getKey()).isEmpty())
-                    .findFirst()
-                    .orElse(null);
+        return tiempoPromedioPorTecnico.entrySet().stream()
+                .filter(entry -> obtenerTodosIncidentesNoResueltos(softwareIncidente, entry.getKey()).isEmpty())
+                .findFirst()
+                .orElse(null);
     }
 
     public static List<Incidente> obtenerTodosIncidentesNoResueltos(Software softwareIncidente, Tecnico tecnico) {
@@ -118,8 +117,6 @@ public class IncidenteManagerBack {
                 .filter(incidente -> !incidente.isEstado())
                 .collect(Collectors.toList());
     }
-
-
 
     public static LocalDateTime calculoFechaEstimadaFin(Double tiempoPromedio) {
         return LocalDateTime.now().plusMinutes(Math.round(tiempoPromedio * 1.2));
@@ -142,6 +139,74 @@ public class IncidenteManagerBack {
         } else {
             System.out.println("enviar whatsapp al cliente");
         }
+    }
+
+    public static void listarTecnicosPorCantidadIncidentesResueltos(LocalDate fechaIncioBusqueda, LocalDate fechaFinBusqueda) {
+        Map<Tecnico, Long> incidentesResueltosPorTecnico = new HashMap<>();
+        List<Incidente> incidentesResueltos = obtenerTodosLosIncidentesResueltos(fechaIncioBusqueda, fechaFinBusqueda);
+        List<Tecnico> tecnicos = listarTodosLosTecnicosEmpresa();
+
+        incidentesResueltosPorTecnico = incidentesResueltos.stream()
+                .filter(incidente -> tecnicos.contains(incidente.getTecnico()))
+                .collect(Collectors.groupingBy(Incidente::getTecnico, Collectors.counting()));
+
+        incidentesResueltosPorTecnico.forEach((tecnico, cantidadIncidentesResueltos) ->
+                System.out.println(tecnico.getNombre() + ": " + cantidadIncidentesResueltos + " incidentes resueltos"));
+    }
+
+    public static List<Incidente> obtenerTodosLosIncidentesResueltos(LocalDate fechaIncioBusqueda, LocalDate fechaFinBusqueda) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Incidente> incidentes;
+        try {
+            entityManager.getTransaction().begin();
+            String jpql = "SELECT i FROM Incidente i WHERE estado = estado AND i.fechaResolucion BETWEEN :fechaInicio AND :fechaFin";
+            incidentes = entityManager.createQuery(jpql, Incidente.class)
+                    .setParameter("estado", true)
+                    .setParameter("fechaInicio", fechaIncioBusqueda)
+                    .setParameter("fechaFin", fechaFinBusqueda)
+                    .getResultList();
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+        return incidentes;
+    }
+
+    public static List<Tecnico> listarTodosLosTecnicosEmpresa() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Tecnico> tecnicos;
+        try {
+            entityManager.getTransaction().begin();
+            String jpql = "SELECT i FROM Tecnico i";
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class)
+                    .getResultList();
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+        return tecnicos;
+    }
+
+    public static void mejorTecnicoDeUnaEspecialidad(Software software) {
+            List<Tecnico> tecnicos = RRHHManagerBack.tecnicosPorConocimiento(software);
+            Map<Tecnico, Double> listaOrdenadaTecnicosPorEspecialidad = obtenerListaOrdenadaPromediosResolucionTecnicos(tecnicos, software);
+            Map.Entry<Tecnico, Double> primerEntry = listaOrdenadaTecnicosPorEspecialidad.entrySet().iterator().next();
+            Tecnico mejorTecnico = primerEntry.getKey();
+            Double promedioResolucion = primerEntry.getValue();
+
+            System.out.println("Mejor técnico de la especialidad " + software.getNombre() + ":");
+            System.out.println("Técnico: " + mejorTecnico.getNombre());
+            System.out.println("Promedio de resolución: " + promedioResolucion);
+        }
+
+
+    public static void seleccionarSoftware(){
+        int maximo, opcion;
+        do{
+            maximo = RRHHManagerFront.mostrarSoftwaresDisponibles(GeneralBack.listarSoftware());
+            opcion = GeneralBack.controlOpcionIndices(maximo);
+            mejorTecnicoDeUnaEspecialidad(GeneralBack.listarSoftware().get(opcion - 1));
+        } while (opcion == maximo + 1);
     }
 }
 

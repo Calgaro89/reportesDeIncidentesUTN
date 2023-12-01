@@ -1,6 +1,10 @@
 package Managers;
 
 
+import Entidades.Software;
+
+import java.util.List;
+
 public class RRHHManagerFront {
 
     public static int mostrarTablaRRHH(){
@@ -8,9 +12,11 @@ public class RRHHManagerFront {
         System.out.println("RECURSOS HUMANOS: ");
         System.out.println("1 - Nuevo Técnico");
         System.out.println("2 - Técnico asociado");
-        System.out.println("3 - Volver");
-        System.out.println("4 - Salir");
-        return 4;
+        System.out.println("3 - Incidentes resueltos por tecnicos");
+        System.out.println("4 - Mejor tecnico de una especialidad");
+        System.out.println("5 - Volver");
+        System.out.println("6 - Salir");
+        return 6;
     }
     public static int mostrarTablaBuscarTecnicoParametros(){
         System.out.println("RECURSOS HUMANOS: Tecnico asociado. Buscar tecnico por parámetros.");
@@ -42,5 +48,15 @@ public class RRHHManagerFront {
         System.out.println("4 - estado");
         System.out.println("5 - Volver");
         return 5;
+    }
+
+    public static int mostrarSoftwaresDisponibles(List<Software> softwareList){
+        int indice = 1;
+        for (Software software : softwareList){
+            System.out.println(indice + ". " + software);
+            indice++;
+        }
+        System.out.println(indice ++ + ". Salir");
+        return indice;
     }
 }

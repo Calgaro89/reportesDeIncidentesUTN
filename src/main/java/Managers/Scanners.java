@@ -1,5 +1,9 @@
 package Managers;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 
 public class Scanners {
@@ -46,4 +50,24 @@ public class Scanners {
         } while (!numeroCorrecto);
         return numero;
     }
+
+    public static LocalDate obtenerLocalDate(String tituloLineaIngreso) {
+        boolean formatoCorrecto = false;
+        LocalDate localDate = null;
+
+        do {
+            try {
+                System.out.println(tituloLineaIngreso + " (Formato: yyyy-MM-dd): ");
+                String input = leer.nextLine();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                localDate = LocalDate.parse(input, formatter);
+                formatoCorrecto = true;
+            } catch (DateTimeParseException error) {
+                System.out.println("Formato " + tituloLineaIngreso + " incorrecto. Inténtalo de nuevo.");
+            }
+        } while (!formatoCorrecto);
+
+        return localDate;
+    }
+
 }
