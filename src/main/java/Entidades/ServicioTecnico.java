@@ -17,6 +17,4 @@ public class ServicioTecnico {
     @JoinColumn(name = "idSoftware")
     private Software software;
     private boolean estado;
-
-
 }

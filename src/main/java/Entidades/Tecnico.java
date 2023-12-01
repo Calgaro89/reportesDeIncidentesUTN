@@ -18,4 +18,7 @@ public class Tecnico {
     private int dni;
     @Column
     private boolean estado;
+    @ManyToOne
+    @JoinColumn(name = "idIncidente")
+    private Incidente incidente;
 }

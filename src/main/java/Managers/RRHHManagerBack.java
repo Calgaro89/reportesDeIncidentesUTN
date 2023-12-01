@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 public class RRHHManagerBack {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
-    public static java.util.Scanner leer = new java.util.Scanner(System.in);
 
     // ------------- CARGAR NUEVO TECNICO ----------------------------------------------------
 
@@ -39,8 +38,7 @@ public class RRHHManagerBack {
             RRHHManagerBack.ingresoIndiceTecnicoAsocaido(tecnico);
             return null;
         }
-        ServicioTecnico servicioTecnico = nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
-        return servicioTecnico;
+        return nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
     }
 
     private static ServicioTecnico nuevosServicioTenicos(Tecnico tecnico, List<Software> softwaresPosibles) {
@@ -53,7 +51,7 @@ public class RRHHManagerBack {
                 indice++;
             }
         }
-        int opcion = GeneralBack.leerOpcionIndices(softwaresPosibles.size());
+        int opcion = GeneralBack.controlOpcionIndices(softwaresPosibles.size());
 
         servicioTecnico.setTecnico(tecnico);
         servicioTecnico.setSoftware(softwaresPosibles.get(opcion - 1));
@@ -162,9 +160,9 @@ public class RRHHManagerBack {
     public static Tecnico crearTecnicoNuevo() {
         System.out.println("RRHH: Nuevo Tecnico.");
         Tecnico tecnico = new Tecnico();
-        tecnico.setNombre(GeneralBack.obtenerNombreOApellido("Nombre"));
-        tecnico.setApellido(GeneralBack.obtenerNombreOApellido("Apellido"));
-        tecnico.setDni(MetodosControl.controlLargoDNI("DNI"));
+        tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre")));
+        tecnico.setApellido(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido")));
+        tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));
         tecnico.setEstado(true);
         return tecnico;
     }
@@ -173,7 +171,7 @@ public class RRHHManagerBack {
         int opcion, volverOmaximo;
         do{
             volverOmaximo = RRHHManagerFront.mostrarTablaRRHH();
-            opcion = GeneralBack.leerOpcionIndices(volverOmaximo);
+            opcion = GeneralBack.controlOpcionIndices(volverOmaximo);
             accionesIndiceRRHH(opcion);
         }while(opcion != volverOmaximo);
     }
@@ -199,7 +197,7 @@ public class RRHHManagerBack {
         int opcion, volverOmaximo;
         do{
             volverOmaximo = RRHHManagerFront.mostrarTablaBuscarTecnicoParametros();
-            opcion = GeneralBack.leerOpcionIndices(volverOmaximo);
+            opcion = GeneralBack.controlOpcionIndices(volverOmaximo);
             tecnico =  opcionesIndicesBuscarTecnicoParametros(opcion);
         }while (opcion != volverOmaximo);
         return tecnico;
@@ -216,17 +214,17 @@ public class RRHHManagerBack {
             case 1:
                 consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
                 parametro = "nombre";
-                valorString = GeneralBack.obtenerNombreOApellido("Nombre: ");
+                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre"));
                 break;
             case 2:
                 consulta = "SELECT t FROM Apellido t WHERE apellido = :apellido";
                 parametro = "apellido";
-                valorString = GeneralBack.obtenerNombreOApellido("Apellido");
+                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido"));
                 break;
             case 3:
                 consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
                 parametro = "dni";
-                valorInt = MetodosControl.controlLargoDNI("DNI");
+                valorInt = GeneralBack.controlLargoDNI("DNI");
                 break;
             case 4:
                 RRHHManagerBack.ingresoIndiceRRHH();
@@ -259,7 +257,7 @@ public class RRHHManagerBack {
         int opcion, volverOmaximo;
         do{
             volverOmaximo = RRHHManagerFront.mostrarTablaTecnicoAsociado();
-            opcion = GeneralBack.leerOpcionIndices(volverOmaximo);
+            opcion = GeneralBack.controlOpcionIndices(volverOmaximo);
             accionesTablaTecnicoAsociado(tecnico, opcion);
         }while(opcion != volverOmaximo);
     }
@@ -294,7 +292,7 @@ public class RRHHManagerBack {
         int opcion, volverOmaximo;
         do {
         volverOmaximo = RRHHManagerFront.mostrarTablaModificarDatosTecnico();
-        opcion = GeneralBack.leerOpcionIndices(volverOmaximo);
+        opcion = GeneralBack.controlOpcionIndices(volverOmaximo);
         opcionesModificarDatosTecnicos(opcion, tecnico);
         } while (opcion != volverOmaximo);
     }
@@ -302,16 +300,15 @@ public class RRHHManagerBack {
     public static void opcionesModificarDatosTecnicos(int opcion, Tecnico tecnico) {
             switch (opcion) {
                 case 1:
-                    tecnico.setNombre(GeneralBack.obtenerNombreOApellido("Nombre"));
+                    tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre")));
                     break;
-                case 2:
-                    tecnico.setNombre(GeneralBack.obtenerNombreOApellido("Apellido"));
+                case 2:  tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido")));
                     break;
                 case 3:
-                    tecnico.setDni(MetodosControl.controlLargoDNI("DNI"));
+                    tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));
                     break;
                 case 4:
-                    tecnico.setEstado((GeneralBack.cambiarEstadoTecnico()));
+                    tecnico.setEstado((cambiarEstadoTecnico()));
                     break;
                 case 5:
                     ingresoIndiceTecnicoAsocaido(tecnico);
@@ -338,22 +335,35 @@ public class RRHHManagerBack {
                 indice++;
             }
         }
-        int opcion = GeneralBack.leerOpcionIndices(softwaresDeUnTecnico.size());
+        int opcion = GeneralBack.controlOpcionIndices(softwaresDeUnTecnico.size());
         return buscarServicioParaDarBaja(softwaresDeUnTecnico.get(opcion), tecnico);
     }
     public static List<Software> softwareDeUnTecnico(Tecnico tecnico){
-        List<Software> listaDeSoftwaresTecnico = RRHHManagerBack.obtenerServiciosTecnicos(tecnico)
+        return RRHHManagerBack.obtenerServiciosTecnicos(tecnico)
                 .stream()
                 .map(ServicioTecnico::getSoftware)
                 .collect(Collectors.toList());
-        return listaDeSoftwaresTecnico;
     }
 
     public static ServicioTecnico buscarServicioParaDarBaja(Software software, Tecnico tecnico){
         return obtenerServiciosTecnicos(tecnico).stream()
-                .filter(servicio -> servicio.getSoftware().getNombre().equals(software))
+                .filter(servicio -> servicio.getSoftware().getNombre().equals(software.getNombre()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    // ------------- CAMBIAR ESTADO TECNICO  -----------------------------------------------
+
+    public static boolean cambiarEstadoTecnico() {
+        System.out.println("Nuevo Estado: ");
+        System.out.print("1- Activo");
+        System.out.print("-- 2- Inactivo");
+        System.out.print("-- 3- Salir");
+        int opcion;
+        do{
+            opcion = GeneralBack.controlOpcionIndices(3);
+        } while(opcion!= 3);
+        return (opcion == 1);
     }
 }
 

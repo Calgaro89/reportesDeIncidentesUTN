@@ -7,10 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Scanner;
 
 
 public class MesaAyudaBack {
@@ -25,7 +23,7 @@ public class MesaAyudaBack {
         int opcion, maximoOvolver;
         do{
             maximoOvolver = MesaAyudaFront.mostrarOpcionesMesaDeAyuda();
-            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+            opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             opcionesIngresoMesaDeAyuda(opcion);
         } while (opcion != maximoOvolver-1);
     }
@@ -50,7 +48,7 @@ public class MesaAyudaBack {
     public static void ingresoCuentaConCuit() {
         boolean salir = false;
         do {
-            cliente = AreaComercialBack.buscarClienteCUIT(GeneralBack.obtenerCuit());
+            cliente = AreaComercialBack.buscarClienteCUIT(GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("CUIT")));
                 if (cliente == null) {
                     System.out.println("Cliente inexistente");
                 } else {
@@ -66,7 +64,7 @@ public class MesaAyudaBack {
         int opcion, maximoOvolver;
         do{
             maximoOvolver = MesaAyudaFront.mostrarOpciones(cliente);
-            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+            opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             mesaDeAyudaCuentaAsociado(opcion);
         } while (opcion != maximoOvolver+1);
     }
@@ -112,25 +110,25 @@ public class MesaAyudaBack {
     // ------------- REPORTAR UN PROBLEMA -------------------------------------
     public static ServicioCliente iniciarReporteProblemas() {
         int indiceMaximo = consultarSuscripciones(cliente);
-        int opcion = GeneralBack.leerOpcionIndices(indiceMaximo);
+        int opcion = GeneralBack.controlOpcionIndices(indiceMaximo);
         Software software = listaSoftwaresClientes.get(opcion);
         return armarServicioClienteReporteProblema(software);
     }
     public static ServicioCliente armarServicioClienteReporteProblema(Software software){
-        ServicioCliente servicioCliente = AreaComercialBack.obtenerServiciosClientes(cliente).stream()
-                .filter(servicio -> servicio.getSoftware().getNombre().equals(software))
+        return AreaComercialBack.obtenerServiciosClientes(cliente).stream()
+                .filter(servicio -> servicio.getSoftware().getNombre().equals(software.getNombre()))
                 .findFirst()
                 .orElse(null);
-        return servicioCliente;
     }
 
     public static void crearIncidente(){
         Incidente incidente = new Incidente();
         incidente.setServicioCliente(iniciarReporteProblemas());
-        incidente.setDescripcion(GeneralBack.obtenerDescripcionIncidente());
+        incidente.setDescripcion(GeneralBack.controlDescripcionIncidente("Ingrese descripcion. (Maximo 1000 caracteres"));
         incidente.setFechaIngreso(LocalDateTime.now());
-        incidente.setTipoComunicacion(GeneralBack.tipoComunicacionReporteIncidente());
+        incidente.setTipoComunicacion(tipoComunicacionReporteIncidente());
         incidente.setEstado(false);
+        IncidenteManagerBack.asignarTecnicoIncidente(incidente);
         cargarIncidente(incidente);
     }
 
@@ -172,7 +170,7 @@ public class MesaAyudaBack {
     }
 
     public static void mostrarHistorialIncidentesPersona(List<Incidente> incidentes){
-        incidentes.stream().filter(incidente -> incidente.isEstado()).forEach(System.out::println);
+        incidentes.stream().filter(Incidente::isEstado).forEach(System.out::println);
     }
 
     // ------------- DAR INCIDENTES POR RESUELTO -------------------------------------
@@ -186,5 +184,13 @@ public class MesaAyudaBack {
         } finally {
             entityManager.close();
         }
+    }
+
+    public static String tipoComunicacionReporteIncidente(){
+        System.out.println("Vía comunicacion preferida");
+        System.out.println("1- celular");
+        System.out.println("2- email");
+        int opcion = GeneralBack.controlOpcionIndices(2);
+        return ((opcion == 1)? "celular":"email");
     }
 }

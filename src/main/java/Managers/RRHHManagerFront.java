@@ -1,9 +1,5 @@
 package Managers;
 
-import Entidades.Tecnico;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class RRHHManagerFront {
 

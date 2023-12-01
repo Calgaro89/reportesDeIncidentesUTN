@@ -1,10 +1,6 @@
 package Managers;
 
 import Entidades.Cliente;
-import org.example.MenuPrincipal;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class AreaComercialFront {
 

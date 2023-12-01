@@ -1,9 +1,11 @@
 package Managers;
+import Entidades.Cliente;
+
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
 public class SendMail {
-        public static void enviarCorreo(String destinatario, String nombreCliente, String nombreTecnico) {
+        public static void enviarCorreo(Cliente cliente, String nombreTecnico) {
 
             //ABRIR PUERTO 587 EN EL ROUTER PARA QUE FUNCIONE
             Properties props = new Properties();
@@ -23,9 +25,9 @@ public class SendMail {
             try {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress("incidentestp@hotmail.com"));
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(cliente.getMail()));
                 message.setSubject("Incidente Resuelto");
-                message.setText("Estimado/a " + nombreCliente + ".\n\n Nos comunicamos con el agrado de informarle que el incidente reportado ya fue resulto " + ".\n\n Atentamente: " + nombreTecnico);
+                message.setText("Estimado/a " + cliente.getNombre() + ".\n\n Nos comunicamos con el agrado de informarle que el incidente reportado ya fue resulto " + ".\n\n Atentamente: " + nombreTecnico);
 
                 Transport.send(message);
                 System.out.println("Correo electronico enviado con exito");

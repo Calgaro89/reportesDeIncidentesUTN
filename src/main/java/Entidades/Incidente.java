@@ -11,23 +11,35 @@ public class Incidente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idIncidente;
+
+    @Column
     private String descripcion;
+
     @OneToOne
     @Nullable
     @JoinColumn(name = "idCategoria")
     private Categoria categoria;
+
     @ManyToOne
     @JoinColumn(name = "idServicioCliente")
     private ServicioCliente servicioCliente;
+
     @ManyToOne
-    @Nullable
+    @Column(nullable = true)
     @JoinColumn(name = "idTecnico")
     private Tecnico tecnico;
+
+    @Column
     private LocalDateTime fechaIngreso;
-    @Nullable
-    private LocalDateTime fechaFin;
-    @Nullable
-    private int tiempoResolucion;
+
+    @Column(nullable = true)
+    private LocalDateTime fechaEstimadaFin;
+
+    @Column
+    private LocalDateTime fechaRealFin;
+    @Column
     private String tipoComunicacion;
+
+    @Column
     private boolean estado;
 }

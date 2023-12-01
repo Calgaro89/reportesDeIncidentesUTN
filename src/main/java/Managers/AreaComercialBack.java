@@ -8,12 +8,12 @@ import org.example.MenuPrincipal;
 import javax.persistence.*;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AreaComercialBack {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
-    public static java.util.Scanner leer = new java.util.Scanner(System.in);
 
     // ------------- CARGAR CLIENTE A LA BASE DE DATOS -----------------------------------------
 
@@ -38,11 +38,8 @@ public class AreaComercialBack {
             entityManager.getTransaction().begin();
             if (valorString == null && valorInt != 0) {
                 cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorInt).getSingleResult();
-            } else if (valorString == null){
-                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorLong).getSingleResult();
-            } else {
-                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, valorString).getSingleResult();
-            }
+            } else
+                cliente = entityManager.createQuery(consulta, Cliente.class).setParameter(parametro, Objects.requireNonNullElse(valorString, valorLong)).getSingleResult();
             } catch (NoResultException cliente_null){
                 return null;
             }
@@ -54,11 +51,10 @@ public class AreaComercialBack {
     // ------------- BUSCAR CLIENTE POR CUIT ------------------------------------------------
     public static Cliente buscarClienteCUIT(String cuit) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Cliente cliente;
         try {
             entityManager.getTransaction().begin();
             try {
-               return cliente = entityManager.createQuery("SELECT t FROM Cliente t WHERE cuit = :cuit", Cliente.class).setParameter("cuit", cuit).getSingleResult();
+               return entityManager.createQuery("SELECT t FROM Cliente t WHERE cuit = :cuit", Cliente.class).setParameter("cuit", cuit).getSingleResult();
            } catch (NoResultException cliente_null){
                return null;
            }
@@ -152,10 +148,10 @@ public class AreaComercialBack {
     public static Cliente crearCliente() {
         System.out.println("AREA COMERCIAL: Nuevo cliente.");
         Cliente cliente = new Cliente();
-        cliente.setNombre(GeneralBack.obtenerNombreOApellido("Nombre"));
-        cliente.setCuit(GeneralBack.obtenerCuit());
-        cliente.setCelular(GeneralBack.obtenerCelular());
-        cliente.setMail(GeneralBack.obtenerEmail());
+        cliente.setNombre(Scanners.obtenerStringSinFormato("Nombre"));
+        cliente.setCuit(GeneralBack.controlFormatoCUIT("CUIT"));
+        cliente.setCelular(GeneralBack.obtenerCelular("Celular"));
+        cliente.setMail(GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("email:")));
         cliente.setEstado(true);
         return cliente;
     }
@@ -172,27 +168,27 @@ public class AreaComercialBack {
             case 1:
                 consulta = "SELECT t FROM Cliente t WHERE nombre = :nombre";
                 parametro = "nombre";
-                valorString = GeneralBack.obtenerNombreOApellido("Nombre");
+                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre"));
                 break;
             case 2:
                 consulta = "SELECT t FROM Cliente t WHERE cuit = :cuit";
                 parametro = "cuit";
-                valorString = GeneralBack.obtenerCuit();
+                valorString = GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("CUIT"));
                 break;
             case 3:
                 consulta = "SELECT t FROM Cliente t WHERE idCliente = :idCliente";
                 parametro = "idCliente";
-                valorInt = GeneralBack.obtenerNumeroInt("idCliente");
+                valorInt = Scanners.obtenerNumeroInt("idCliente");
                 break;
             case 4:
                 consulta = "SELECT t FROM Cliente t WHERE mail = :mail";
                 parametro = "mail";
-                valorString = GeneralBack.obtenerEmail();
+                valorString = GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("email:"));
                 break;
             case 5:
                 consulta = "SELECT t FROM Cliente t WHERE celular = :celular";
                 parametro = "celular";
-                valorLong = GeneralBack.obtenerCelular();
+                valorLong = GeneralBack.obtenerCelular("Celular");
                 break;
             case 6:
                 AreaComercialBack.ingresoAreaComercial();
@@ -225,7 +221,7 @@ public class AreaComercialBack {
         int maximoOvolver, opcion;
         do {
              maximoOvolver = AreaComercialFront.mostrarMenuModificarCliente(cliente);
-             opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+             opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             AreaComercialBack.procesarOpcionModificarDatosClientes(opcion, cliente);
         } while (opcion != maximoOvolver);
     }
@@ -241,48 +237,22 @@ public class AreaComercialBack {
     }
 
     private static void modificarNombre(Cliente cliente) {
-        System.out.print("Nuevo nombre: ");
-        cliente.setNombre(leer.next());
+        cliente.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nuevo nombre")));
         actualizarDatosCliente(cliente);
-        leer.nextLine();
     }
 
     private static void modificarCUIT(Cliente cliente) {
-        String cuit;
-        do {
-            System.out.print("Nuevo CUIT: ");
-            cuit = leer.next();
-            leer.nextLine();
-        } while (!MetodosControl.validarFormatoCUIT(cuit));
-        cliente.setCuit(cuit);
+        cliente.setCuit(GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("Nuevo CUIT")));
         actualizarDatosCliente(cliente);
     }
 
     private static void modificarEmail(Cliente cliente) {
-        String mail;
-        do {
-            System.out.print("Nuevo e-mail: ");
-            mail = leer.next();
-            leer.nextLine();
-        } while (!MetodosControl.validarEmail(mail));
-        cliente.setMail(mail);
+        cliente.setMail(GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("Nuevo email")));
         actualizarDatosCliente(cliente);
     }
 
     private static void modificarCelular(Cliente cliente) {
-        boolean celularCorrecto = false;
-        System.out.print("Nuevo celular: ");
-        long celular = 0;
-        do {
-            try {
-                celular = leer.nextLong();
-                leer.nextLine();
-                celularCorrecto = true;
-            } catch (InputMismatchException error) {
-                System.out.println("Celular Incorrecto. Cárguelo nuevamente:");
-            }
-        } while (!celularCorrecto);
-        cliente.setCelular(celular);
+        cliente.setCelular(GeneralBack.obtenerCelular("Nuevo Celular"));
         actualizarDatosCliente(cliente);
     }
 
@@ -308,7 +278,7 @@ public class AreaComercialBack {
         servicioCliente.setEstado(true);
         servicioCliente.setCliente(cliente);
         List<Software> softwareList = GeneralBack.softwareDisponiblesClientesParaContratar(cliente);
-        int opcion = GeneralBack.leerOpcionIndices(mostrarServiciosDisponiblesParaEseCliente(softwareList));
+        int opcion = GeneralBack.controlOpcionIndices(mostrarServiciosDisponiblesParaEseCliente(softwareList));
         servicioCliente.setSoftware(softwareList.get(opcion - 1));
         return servicioCliente;
     }
@@ -329,7 +299,7 @@ public class AreaComercialBack {
     public static ServicioCliente armadoServicioClienteParaBaja(Cliente cliente) {
         List<Software> softwaresCliente = listarSoftwareDeCliente(cliente);
         int maximo = mostrarServiciosDisponiblesParaEseCliente(softwaresCliente);
-        int indice = GeneralBack.leerOpcionIndices(maximo);
+        int indice = GeneralBack.controlOpcionIndices(maximo);
         Software softwareBaja = softwaresCliente.get(indice - 1);
         ServicioCliente servicioClienteEliminar = AreaComercialBack.obtenerServiciosClientes(cliente).stream()
                 .filter(servicioCliente -> servicioCliente.getSoftware().equals(softwareBaja))
@@ -351,7 +321,7 @@ public class AreaComercialBack {
         int opcion, maximoOvolver;
         do {
             maximoOvolver = AreaComercialFront.mostrarTablaClientesAsociado(cliente);
-            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+            opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             opcionesTablaClienteAsociado(opcion, cliente);
         } while (opcion != maximoOvolver);
     }
@@ -383,7 +353,7 @@ public class AreaComercialBack {
         int opcion, maximoOvolver;
         do{
             maximoOvolver = AreaComercialFront.mostrarTablaAreaComercial();
-            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+            opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             metodosTablaAreaComercial(opcion);
         } while (opcion != maximoOvolver-1);
     }
@@ -393,7 +363,7 @@ public class AreaComercialBack {
         int opcion, maximoOvolver;
         do{
             maximoOvolver = AreaComercialFront.mostrarTablaBuscarClienteAsociado();
-            opcion = GeneralBack.leerOpcionIndices(maximoOvolver);
+            opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             controlResultadoBusquedaCliente(buscarClientesParametros(opcion));
         } while (opcion != maximoOvolver);
     }
