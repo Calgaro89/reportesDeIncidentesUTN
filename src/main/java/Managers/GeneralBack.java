@@ -110,7 +110,7 @@ public class GeneralBack {
         String mail;
         do {
             mail = Scanners.obtenerStringSinFormato(tituloLineaIngreso);
-            System.out.println(validarFormatoCUIT(mail)? "":"Formato mail incorrecto");
+            System.out.println(validarEmail(mail) ? "":"Formato mail incorrecto");
         } while (!validarEmail(mail));
         return mail;
     }
@@ -120,7 +120,7 @@ public class GeneralBack {
     }
 
     public static long obtenerCelular(String tituloLineaIngreso) {
-        Long celular;
+        long celular;
         do {
              celular = Scanners.obtenerNumeroLong("Celular");
         } while (!validarCelular(celular));
@@ -128,7 +128,7 @@ public class GeneralBack {
     }
 
     public static boolean validarCelular(Long numeroCelular) {
-        return (numeroCelular.toString().length() == 10 && numeroCelular.toString().startsWith("15"));
+        return (numeroCelular.toString().length() == 10);
     }
 
     public static int controlLargoDNI(String titulo) {

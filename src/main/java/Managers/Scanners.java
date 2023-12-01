@@ -22,7 +22,7 @@ public class Scanners {
         int numero = 0;
         do {
             try {
-                System.out.println(tituloLineaIngreso + ": ");
+                System.out.print(tituloLineaIngreso + ": ");
                 numero = leer.nextInt();
                 leer.nextLine();
                 numeroCorrecto = true;
@@ -39,8 +39,8 @@ public class Scanners {
         long numero = 0;
         do {
             try {
-                System.out.println(tituloLineaIngreso + ": ");
-                numero = leer.nextInt();
+                System.out.print(tituloLineaIngreso + ": ");
+                numero = leer.nextLong();
                 leer.nextLine();
                 numeroCorrecto = true;
             } catch (InputMismatchException error) {
@@ -57,7 +57,7 @@ public class Scanners {
 
         do {
             try {
-                System.out.println(tituloLineaIngreso + " (Formato: yyyy-MM-dd): ");
+                System.out.print(tituloLineaIngreso + " (Formato: yyyy-MM-dd): ");
                 String input = leer.nextLine();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 localDate = LocalDate.parse(input, formatter);

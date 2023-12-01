@@ -94,7 +94,7 @@ public class RRHHManagerBack {
         try {
             entityManager.getTransaction().begin();
             String jpql = "SELECT t FROM Tecnico t JOIN t.serviciosTecnicos st WHERE st.software = :software";
-            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software.getNombre()).getResultList();;
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software.getNombre()).getResultList();
         } finally {
             entityManager.close();
         }

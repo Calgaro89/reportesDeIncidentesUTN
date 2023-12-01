@@ -151,7 +151,7 @@ public class AreaComercialBack {
         cliente.setNombre(Scanners.obtenerStringSinFormato("Nombre"));
         cliente.setCuit(GeneralBack.controlFormatoCUIT("CUIT"));
         cliente.setCelular(GeneralBack.obtenerCelular("Celular"));
-        cliente.setMail(GeneralBack.controlFormatoEmail("email:"));
+        cliente.setMail(GeneralBack.controlFormatoEmail("Email:"));
         cliente.setEstado(true);
         return cliente;
     }
