@@ -16,11 +16,25 @@ import java.util.stream.Collectors;
 public class IncidenteManagerBack {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA_PU");
 
+    // ------------- ACTUALIZAR EL ESTADO DE UN INCIDENTE ---------------------------------------
+
+    public static void actualizarIncidente(Incidente incidente) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.merge(incidente);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+
     // ------------- ASIGNAR UN TECNICO A UN INCIDENTE ---------------------------------------
     public static void asignarTecnicoIncidente(Incidente incidente) {
         List<Tecnico> tecnicos = RRHHManagerBack.tecnicosPorConocimiento(incidente.getServicioCliente());
         Software softwareIncidente = incidente.getServicioCliente().getSoftware();
-        Map<Tecnico, Double> tiempoPromedioPorTecnico = obtenerListaPromediosResolucionTecnicos(tecnicos, softwareIncidente);
+        Map<Tecnico, Double> tiempoPromedioPorTecnico = obtenerListaOrdenadaPromediosResolucionTecnicos(tecnicos, softwareIncidente);
 
         Map.Entry<Tecnico, Double> mejorTecnicoEntry = encontrarMejorTecnicoPosibleDesocupado(tiempoPromedioPorTecnico, softwareIncidente);
         Tecnico tecnico;
@@ -41,6 +55,8 @@ public class IncidenteManagerBack {
         }
         actualizarIncidente(incidente);
     }
+
+    // ------------- BUSCA PARA CADA TECNICO LOS INCIDENTES RESUELTOS Y NO RESUELTOS --------------------------------
 
     public static List<Incidente> obtenerTodosIncidentesPorTenico(Software softwareIncidente, Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -71,7 +87,7 @@ public class IncidenteManagerBack {
         return Duration.between(incidente.getFechaIngreso(), incidente.getFechaRealFin()).toHours();
     }
 
-    public static Map<Tecnico, Double> obtenerListaPromediosResolucionTecnicos(List<Tecnico> tecnicos, Software softwareIncidente) {
+    public static Map<Tecnico, Double> obtenerListaOrdenadaPromediosResolucionTecnicos(List<Tecnico> tecnicos, Software softwareIncidente) {
         Map<Tecnico, Double> tiempoPromedioPorTecnico = new HashMap<>();
         Map<Tecnico, Double> finalTiempoPromedioPorTecnico = tiempoPromedioPorTecnico;
 
@@ -90,13 +106,10 @@ public class IncidenteManagerBack {
     }
 
     public static Map.Entry<Tecnico, Double> encontrarMejorTecnicoPosibleDesocupado(Map<Tecnico, Double> tiempoPromedioPorTecnico, Software softwareIncidente) {
-        for (Map.Entry<Tecnico, Double> entry : tiempoPromedioPorTecnico.entrySet()) {
-            List<Incidente> incidentesDelTecnico = obtenerTodosIncidentesNoResueltos(softwareIncidente, entry.getKey());
-            if (incidentesDelTecnico.isEmpty()) {
-                return entry;
-            }
-        }
-        return null;
+            return tiempoPromedioPorTecnico.entrySet().stream()
+                    .filter(entry -> obtenerTodosIncidentesNoResueltos(softwareIncidente, entry.getKey()).isEmpty())
+                    .findFirst()
+                    .orElse(null);
     }
 
     public static List<Incidente> obtenerTodosIncidentesNoResueltos(Software softwareIncidente, Tecnico tecnico) {
@@ -107,16 +120,6 @@ public class IncidenteManagerBack {
     }
 
 
-    public static void actualizarIncidente(Incidente incidente) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(incidente);
-            entityManager.getTransaction().commit();
-        } finally {
-            entityManager.close();
-        }
-    }
 
     public static LocalDateTime calculoFechaEstimadaFin(Double tiempoPromedio) {
         return LocalDateTime.now().plusMinutes(Math.round(tiempoPromedio * 1.2));
@@ -139,7 +142,6 @@ public class IncidenteManagerBack {
         } else {
             System.out.println("enviar whatsapp al cliente");
         }
-
     }
 }
 
