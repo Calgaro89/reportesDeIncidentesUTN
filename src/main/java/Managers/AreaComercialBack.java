@@ -156,7 +156,6 @@ public class AreaComercialBack {
         return cliente;
     }
 
-
     // ------------- BUSCAR CLIENTE ------------------------------------------------------
     public static Cliente buscarClientesParametros(int opcion) {
         String consulta = null;
@@ -217,7 +216,7 @@ public class AreaComercialBack {
 
     // ------------- MODIFICAR DATOS CLIENTE -----------------------------------------------
 
-    public static void modificarDatosClientes(Cliente cliente) {
+    public static void ingresarModificarDatosClientes(Cliente cliente) {
         int maximoOvolver, opcion;
         do {
              maximoOvolver = AreaComercialFront.mostrarMenuModificarCliente(cliente);
@@ -328,7 +327,7 @@ public class AreaComercialBack {
 
     public static void opcionesTablaClienteAsociado(int opcion, Cliente cliente) {
             switch (opcion) {
-                case 1:modificarDatosClientes(cliente);break;
+                case 1:ingresarModificarDatosClientes(cliente);break;
                 case 2:bajaCliente(cliente);break;
                 case 3:eliminarCliente(cliente);break;
                 case 4:consultarDatosCliente(cliente);break;

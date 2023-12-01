@@ -49,7 +49,4 @@ public class AreaComercialFront {
         return 5;
     }
 
-
-
-
 }
