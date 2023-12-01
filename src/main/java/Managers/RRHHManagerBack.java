@@ -38,10 +38,10 @@ public class RRHHManagerBack {
             RRHHManagerBack.ingresoIndiceTecnicoAsocaido(tecnico);
             return null;
         }
-        return nuevosServicioTenicos(tecnico, softwaresSinExperiencia);
+        return nuevosServicioTecnicos(tecnico, softwaresSinExperiencia);
     }
 
-    private static ServicioTecnico nuevosServicioTenicos(Tecnico tecnico, List<Software> softwaresPosibles) {
+    private static ServicioTecnico nuevosServicioTecnicos(Tecnico tecnico, List<Software> softwaresPosibles) {
         int indice = 1;
         ServicioTecnico servicioTecnico = new ServicioTecnico();
         System.out.println("Servicios: ");

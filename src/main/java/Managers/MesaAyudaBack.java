@@ -66,7 +66,7 @@ public class MesaAyudaBack {
             maximoOvolver = MesaAyudaFront.mostrarOpciones(cliente);
             opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             mesaDeAyudaCuentaAsociado(opcion);
-        } while (opcion != maximoOvolver+1);
+        } while (opcion != maximoOvolver + 1);
     }
     public static void mesaDeAyudaCuentaAsociado(int opcion) {
         switch (opcion) {
@@ -83,7 +83,7 @@ public class MesaAyudaBack {
                 mostrarHistorialIncidentesPersona(buscarIncidentesPorCliente(cliente));
                 break;
             case 5:
-                System.exit(0);
+                MenuPrincipal.mostrarMenuPrincipal();
                 break;
         }
     }
@@ -109,9 +109,10 @@ public class MesaAyudaBack {
     }
     // ------------- REPORTAR UN PROBLEMA -------------------------------------
     public static ServicioCliente iniciarReporteProblemas() {
-        int indiceMaximo = consultarSuscripciones(cliente);
+       int indiceMaximo = consultarSuscripciones(cliente);
+        System.out.println("Valor de indiceMaximo: " + indiceMaximo);
         int opcion = GeneralBack.controlOpcionIndices(indiceMaximo);
-        Software software = listaSoftwaresClientes.get(opcion);
+        Software software = listaSoftwaresClientes.get(opcion-1);
         return armarServicioClienteReporteProblema(software);
     }
     public static ServicioCliente armarServicioClienteReporteProblema(Software software){
