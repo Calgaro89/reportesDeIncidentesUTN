@@ -187,7 +187,7 @@ public class RRHHManagerBack {
             case 4: IncidenteManagerBack.seleccionarSoftware();
                     break;
             case 5:
-                MenuPrincipal.mostrarMenuPrincipal();
+                MenuPrincipal.inicioPrograma();
                 break;
             case 6:
                 System.exit(0);

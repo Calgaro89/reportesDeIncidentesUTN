@@ -36,7 +36,7 @@ public class MesaAyudaBack {
                         System.out.println("Seleccionaste: Contratar servicios");
                         break;
                     case 3:
-                        MenuPrincipal.mostrarMenuPrincipal();
+                        MenuPrincipal.inicioPrograma();
                         break;
                     case 4:
                         System.out.println("¡Hasta luego!");
@@ -83,7 +83,7 @@ public class MesaAyudaBack {
                 mostrarHistorialIncidentesPersona(buscarIncidentesPorCliente(cliente));
                 break;
             case 5:
-                MenuPrincipal.mostrarMenuPrincipal();
+                MenuPrincipal.inicioPrograma();
                 break;
         }
     }

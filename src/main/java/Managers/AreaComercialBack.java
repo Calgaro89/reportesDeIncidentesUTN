@@ -6,6 +6,7 @@ import Entidades.Software;
 import org.example.MenuPrincipal;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
@@ -343,7 +344,7 @@ public class AreaComercialBack {
         switch (opcion) {
             case 1: cargarCliente();break;
             case 2: ingresoBuscarClienteAsociado(); break;
-            case 3: MenuPrincipal.mostrarMenuPrincipal();break;
+            case 3: MenuPrincipal.inicioPrograma();break;
             case 4: System.exit(0); break;
         }
     }

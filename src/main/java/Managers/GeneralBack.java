@@ -25,7 +25,7 @@ public class GeneralBack {
             entityManager.close();
         }
         System.out.println("Software agregado con exito.");
-        MenuPrincipal.mostrarMenuPrincipal();
+        MenuPrincipal.inicioPrograma();
     }
 
     public static Software armarNuevoSoftware() {
