@@ -160,8 +160,8 @@ public class RRHHManagerBack {
     public static Tecnico crearTecnicoNuevo() {
         System.out.println("RRHH: Nuevo Tecnico.");
         Tecnico tecnico = new Tecnico();
-        tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre")));
-        tecnico.setApellido(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido")));
+        tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido("Nombre"));
+        tecnico.setApellido(GeneralBack.controlFormatoNombreOApellido("Apellido"));
         tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));
         tecnico.setEstado(true);
         return tecnico;
@@ -219,12 +219,12 @@ public class RRHHManagerBack {
             case 1:
                 consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
                 parametro = "nombre";
-                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre"));
+                valorString = GeneralBack.controlFormatoNombreOApellido("Nombre");
                 break;
             case 2:
                 consulta = "SELECT t FROM Apellido t WHERE apellido = :apellido";
                 parametro = "apellido";
-                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido"));
+                valorString = GeneralBack.controlFormatoNombreOApellido("Apellido");
                 break;
             case 3:
                 consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
@@ -305,9 +305,9 @@ public class RRHHManagerBack {
     public static void opcionesModificarDatosTecnicos(int opcion, Tecnico tecnico) {
             switch (opcion) {
                 case 1:
-                    tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre")));
+                    tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido("Nombre"));
                     break;
-                case 2:  tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Apellido")));
+                case 2:  tecnico.setNombre(GeneralBack.controlFormatoNombreOApellido("Apellido"));
                     break;
                 case 3:
                     tecnico.setDni(GeneralBack.controlLargoDNI("DNI"));

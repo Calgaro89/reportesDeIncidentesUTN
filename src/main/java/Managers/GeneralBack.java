@@ -31,7 +31,7 @@ public class GeneralBack {
     public static Software armarNuevoSoftware() {
         System.out.println("-----Nuevo Software----");
         Software software = new Software();
-        software.setNombre(controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Software")));
+        software.setNombre(controlFormatoNombreOApellido("Software"));
         software.setEstado(true);
         return software;
     }

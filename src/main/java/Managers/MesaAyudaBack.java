@@ -48,7 +48,7 @@ public class MesaAyudaBack {
     public static void ingresoCuentaConCuit() {
         boolean salir = false;
         do {
-            cliente = AreaComercialBack.buscarClienteCUIT(GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("CUIT")));
+            cliente = AreaComercialBack.buscarClienteCUIT(GeneralBack.controlFormatoCUIT("CUIT"));
                 if (cliente == null) {
                     System.out.println("Cliente inexistente");
                 } else {

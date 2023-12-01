@@ -151,7 +151,7 @@ public class AreaComercialBack {
         cliente.setNombre(Scanners.obtenerStringSinFormato("Nombre"));
         cliente.setCuit(GeneralBack.controlFormatoCUIT("CUIT"));
         cliente.setCelular(GeneralBack.obtenerCelular("Celular"));
-        cliente.setMail(GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("email:")));
+        cliente.setMail(GeneralBack.controlFormatoEmail("email:"));
         cliente.setEstado(true);
         return cliente;
     }
@@ -167,12 +167,12 @@ public class AreaComercialBack {
             case 1:
                 consulta = "SELECT t FROM Cliente t WHERE nombre = :nombre";
                 parametro = "nombre";
-                valorString = GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nombre"));
+                valorString = GeneralBack.controlFormatoNombreOApellido("Nombre");
                 break;
             case 2:
                 consulta = "SELECT t FROM Cliente t WHERE cuit = :cuit";
                 parametro = "cuit";
-                valorString = GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("CUIT"));
+                valorString = GeneralBack.controlFormatoCUIT("CUIT");
                 break;
             case 3:
                 consulta = "SELECT t FROM Cliente t WHERE idCliente = :idCliente";
@@ -182,7 +182,7 @@ public class AreaComercialBack {
             case 4:
                 consulta = "SELECT t FROM Cliente t WHERE mail = :mail";
                 parametro = "mail";
-                valorString = GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("email:"));
+                valorString = GeneralBack.controlFormatoEmail("email:");
                 break;
             case 5:
                 consulta = "SELECT t FROM Cliente t WHERE celular = :celular";
@@ -236,17 +236,17 @@ public class AreaComercialBack {
     }
 
     private static void modificarNombre(Cliente cliente) {
-        cliente.setNombre(GeneralBack.controlFormatoNombreOApellido(Scanners.obtenerStringSinFormato("Nuevo nombre")));
+        cliente.setNombre(GeneralBack.controlFormatoNombreOApellido("Nuevo nombre"));
         actualizarDatosCliente(cliente);
     }
 
     private static void modificarCUIT(Cliente cliente) {
-        cliente.setCuit(GeneralBack.controlFormatoCUIT(Scanners.obtenerStringSinFormato("Nuevo CUIT")));
+        cliente.setCuit(GeneralBack.controlFormatoCUIT("Nuevo CUIT"));
         actualizarDatosCliente(cliente);
     }
 
     private static void modificarEmail(Cliente cliente) {
-        cliente.setMail(GeneralBack.controlFormatoEmail(Scanners.obtenerStringSinFormato("Nuevo email")));
+        cliente.setMail(GeneralBack.controlFormatoEmail("Nuevo email"));
         actualizarDatosCliente(cliente);
     }
 

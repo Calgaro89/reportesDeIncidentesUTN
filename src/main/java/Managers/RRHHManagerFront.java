@@ -38,8 +38,6 @@ public class RRHHManagerFront {
         return 6;
     }
 
-
-
     public static int mostrarTablaModificarDatosTecnico(){
         System.out.println("RECURSOS HUMANOS: Tecnico asociado. Modificar datos de tecnicos.");
         System.out.println("1 - Nombre");
