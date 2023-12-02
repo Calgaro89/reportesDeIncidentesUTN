@@ -35,7 +35,7 @@ public class RRHHManagerBack {
         List<Software> softwaresSinExperiencia = GeneralBack.softwareDisponiblesAgregarTecnicos(tecnico);
         if (softwaresSinExperiencia.isEmpty()) {
             System.out.println("No hay softwares para agregar a la expertise del técnico");
-            RRHHManagerBack.ingresoIndiceTecnicoAsocaido(tecnico);
+            RRHHManagerBack.ingresoIndiceTecnicoAsociado(tecnico);
             return null;
         }
         return nuevosServicioTecnicos(tecnico, softwaresSinExperiencia);
@@ -179,7 +179,7 @@ public class RRHHManagerBack {
         switch (opcion) {
             case 1:  ingresoArmarYCargarServicioTecnico(RRHHManagerBack.cargarTecnico(crearTecnicoNuevo()));
                 break;
-            case 2: ingresoIndiceTecnicoAsocaido(ingresoBusquedaTecnicoPorParametro());
+            case 2: ingresoIndiceTecnicoAsociado(ingresoBusquedaTecnicoPorParametro());
                 break;
             case 3:
                     IncidenteManagerBack.listarTecnicosPorCantidadIncidentesResueltos(Scanners.obtenerLocalDate("Fecha inicio busqueda"),Scanners.obtenerLocalDate("Fecha fin de busqueda"));
@@ -214,28 +214,32 @@ public class RRHHManagerBack {
         String parametro = null;
         int valorInt = 0;
         String valorString = null;
+            switch (opcion) {
+                case 1:
+                    consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
+                    parametro = "nombre";
+                    valorString = GeneralBack.controlFormatoNombreOApellido("Nombre");
+                    break;
+                case 2:
+                    consulta = "SELECT t FROM Tecnico t WHERE apellido = :apellido";
+                    parametro = "apellido";
+                    valorString = GeneralBack.controlFormatoNombreOApellido("Apellido");
+                    break;
+                case 3:
+                    consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
+                    parametro = "dni";
+                    valorInt = GeneralBack.controlLargoDNI("DNI");
+                    break;
+                case 4:
+                    RRHHManagerBack.ingresoIndiceRRHH();
+                    break;
+            }
 
-        switch (opcion) {
-            case 1:
-                consulta = "SELECT t FROM Tecnico t WHERE nombre = :nombre";
-                parametro = "nombre";
-                valorString = GeneralBack.controlFormatoNombreOApellido("Nombre");
-                break;
-            case 2:
-                consulta = "SELECT t FROM Apellido t WHERE apellido = :apellido";
-                parametro = "apellido";
-                valorString = GeneralBack.controlFormatoNombreOApellido("Apellido");
-                break;
-            case 3:
-                consulta = "SELECT t FROM Tecnico t WHERE dni = :dni";
-                parametro = "dni";
-                valorInt = GeneralBack.controlLargoDNI("DNI");
-                break;
-            case 4:
-                RRHHManagerBack.ingresoIndiceRRHH();
-                break;
-        }
         tecnico = RRHHManagerBack.buscarTecnicoParametros(consulta, parametro, valorInt, valorString);
+        if (tecnico == null){
+            System.out.println("No se encontro el Tecnico asociado, vuelva a intentarlo");
+            ingresoBusquedaTecnicoPorParametro();
+        }
         return tecnico;
     }
 
@@ -258,7 +262,7 @@ public class RRHHManagerBack {
     }
 
     // ------------- INGRESO A TECNICO ASOCIADO RRHH ----------------------------------------
-    public static void ingresoIndiceTecnicoAsocaido(Tecnico tecnico){
+    public static void ingresoIndiceTecnicoAsociado(Tecnico tecnico){
         int opcion, volverOmaximo;
         do{
             volverOmaximo = RRHHManagerFront.mostrarTablaTecnicoAsociado();
@@ -316,7 +320,7 @@ public class RRHHManagerBack {
                     tecnico.setEstado((cambiarEstadoTecnico()));
                     break;
                 case 5:
-                    ingresoIndiceTecnicoAsocaido(tecnico);
+                    ingresoIndiceTecnicoAsociado(tecnico);
                     break;
             }
         actualizarDatosPersonalesTecnico(tecnico);
