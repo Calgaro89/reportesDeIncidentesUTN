@@ -93,8 +93,8 @@ public class RRHHManagerBack {
         List<Tecnico> tecnicos;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT t FROM Tecnico t JOIN t.serviciosTecnicos st WHERE st.software = :software";
-            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software.getNombre()).getResultList();
+            String jpql = "SELECT st.tecnico FROM ServicioTecnico st WHERE st.software = :software";
+            tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software).getResultList();
         } finally {
             entityManager.close();
         }

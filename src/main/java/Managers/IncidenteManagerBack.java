@@ -57,12 +57,12 @@ public class IncidenteManagerBack {
 
     // ------------- BUSCA PARA CADA TECNICO LOS INCIDENTES RESUELTOS Y NO RESUELTOS --------------------------------
 
-    public static List<Incidente> obtenerTodosIncidentesPorTenico(Software softwareIncidente, Tecnico tecnico) {
+    public static List<Incidente> obtenerTodosIncidentesPorTecnico(Software softwareIncidente, Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Incidente> incidentes;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT i FROM Incidente i WHERE i.tecnico = :tecnico AND i.servicioCliente.servicioTecnico.software = :software";
+            String jpql = "SELECT i FROM Incidente i WHERE i.tecnico = :tecnico AND i.servicioCliente.software = :software";
             incidentes = entityManager.createQuery(jpql, Incidente.class)
                     .setParameter("tecnico", tecnico)
                     .setParameter("software", softwareIncidente)
@@ -91,7 +91,7 @@ public class IncidenteManagerBack {
         Map<Tecnico, Double> finalTiempoPromedioPorTecnico = tiempoPromedioPorTecnico;
 
         tecnicos.forEach(tecnico ->
-                finalTiempoPromedioPorTecnico.put(tecnico, calcularPromedioTiempoResolucionTecnico(obtenerTodosIncidentesPorTenico(softwareIncidente, tecnico))));
+                finalTiempoPromedioPorTecnico.put(tecnico, calcularPromedioTiempoResolucionTecnico(obtenerTodosIncidentesPorTecnico(softwareIncidente, tecnico))));
 
         tiempoPromedioPorTecnico = tiempoPromedioPorTecnico.entrySet()
                 .stream()
@@ -112,7 +112,7 @@ public class IncidenteManagerBack {
     }
 
     public static List<Incidente> obtenerTodosIncidentesNoResueltos(Software softwareIncidente, Tecnico tecnico) {
-        return obtenerTodosIncidentesPorTenico(softwareIncidente, tecnico)
+        return obtenerTodosIncidentesPorTecnico(softwareIncidente, tecnico)
                 .stream()
                 .filter(incidente -> !incidente.isEstado())
                 .collect(Collectors.toList());
@@ -155,15 +155,17 @@ public class IncidenteManagerBack {
     }
 
     public static List<Incidente> obtenerTodosLosIncidentesResueltos(LocalDate fechaIncioBusqueda, LocalDate fechaFinBusqueda) {
+        LocalDateTime fechaInicio = fechaIncioBusqueda.atStartOfDay();
+        LocalDateTime fechaFin = fechaFinBusqueda.atStartOfDay().plusDays(1);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Incidente> incidentes;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT i FROM Incidente i WHERE estado = estado AND i.fechaResolucion BETWEEN :fechaInicio AND :fechaFin";
+            String jpql = "SELECT i FROM Incidente i WHERE estado = :estado AND i.fechaRealFin BETWEEN :fechaInicio AND :fechaFin";
             incidentes = entityManager.createQuery(jpql, Incidente.class)
                     .setParameter("estado", true)
-                    .setParameter("fechaInicio", fechaIncioBusqueda)
-                    .setParameter("fechaFin", fechaFinBusqueda)
+                    .setParameter("fechaInicio", fechaInicio)
+                    .setParameter("fechaFin", fechaFin)
                     .getResultList();
             entityManager.getTransaction().commit();
         } finally {
