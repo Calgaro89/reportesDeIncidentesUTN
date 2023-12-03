@@ -204,8 +204,8 @@ public class RRHHManagerBack {
             volverOmaximo = RRHHManagerFront.mostrarTablaBuscarTecnicoParametros();
             opcion = GeneralBack.controlOpcionIndices(volverOmaximo);
             tecnico =  opcionesIndicesBuscarTecnicoParametros(opcion);
-        }while (opcion != volverOmaximo);
-        return tecnico;
+        }while (tecnico == null);
+            return tecnico;
     }
 
     public static Tecnico opcionesIndicesBuscarTecnicoParametros(int opcion) {

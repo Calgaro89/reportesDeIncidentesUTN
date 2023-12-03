@@ -3,7 +3,6 @@ package Managers;
 import Entidades.*;
 import org.example.MenuPrincipal;
 import javax.persistence.*;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -84,7 +83,7 @@ public class GeneralBack {
         String nombre;
         do {
             nombre = Scanners.obtenerStringSinFormato(tituloLineaIngreso);
-            System.out.println((validarFormatoNombreApellido(nombre))? "":"Formato incorrecto");
+            if (!validarFormatoNombreApellido(nombre)) {System.out.println("Formato incorrecto");}
         } while (!validarFormatoNombreApellido(nombre));
         return nombre;
     }
@@ -97,7 +96,7 @@ public class GeneralBack {
         String cuit;
         do {
             cuit = Scanners.obtenerStringSinFormato(titutloLineaIngreso);
-            System.out.println(validarFormatoCUIT(cuit)? "":"Cuit incorrecto, vuelva a ingresarlo en formato (xx-xxxxxxxx-x):");
+            if (!validarFormatoCUIT(cuit)) {System.out.println("Cuit incorrecto, vuelva a ingresarlo en formato (xx-xxxxxxxx-x):");}
         } while (!validarFormatoCUIT(cuit));
         return cuit;
     }
@@ -110,7 +109,7 @@ public class GeneralBack {
         String mail;
         do {
             mail = Scanners.obtenerStringSinFormato(tituloLineaIngreso);
-            System.out.println(validarEmail(mail) ? "":"Formato mail incorrecto");
+            if (!validarEmail(mail)) {System.out.println("Formato mail incorrecto");}
         } while (!validarEmail(mail));
         return mail;
     }

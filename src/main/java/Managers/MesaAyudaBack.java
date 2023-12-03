@@ -153,10 +153,11 @@ public class MesaAyudaBack {
     public static List<Incidente> buscarIncidentesPorCliente(Cliente cliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Incidente> incidentes;
-        String consulta = "SELECT t FROM Incidente t WHERE idCliente = :idCliente";
+        String consulta = "SELECT i FROM Incidente i WHERE i.servicioCliente.cliente.idCliente = :idCliente";
         try {
             entityManager.getTransaction().begin();
             incidentes = entityManager.createQuery(consulta, Incidente.class).setParameter("idCliente", cliente.getIdCliente()).getResultList();
+            entityManager.getTransaction().commit();
         } catch (NoResultException incidentes_null) {
             System.out.println("No posee incidentes");
             return null;
@@ -167,11 +168,19 @@ public class MesaAyudaBack {
     }
 
     public static void mostrarListaDeIncidentesNoResueltos(List<Incidente> incidentes){
-        incidentes.stream().filter(incidente -> !incidente.isEstado()).forEach(System.out::println);
-    }
+        if (!incidentes.isEmpty()) {
+            incidentes.stream().filter(incidente -> !incidente.isEstado()).forEach(System.out::println);
+        } else {
+            System.out.println("No posee incidentes registrados en el sistema");
+        }
+        }
 
     public static void mostrarHistorialIncidentesPersona(List<Incidente> incidentes){
+        if (!incidentes.isEmpty()) {
         incidentes.stream().filter(Incidente::isEstado).forEach(System.out::println);
+        } else {
+            System.out.println("No posee incidentes registrados en el sistema");
+        }
     }
 
     // ------------- DAR INCIDENTES POR RESUELTO -------------------------------------

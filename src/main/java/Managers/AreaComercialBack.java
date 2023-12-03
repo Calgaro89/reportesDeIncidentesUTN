@@ -4,9 +4,11 @@ import Entidades.Cliente;
 import Entidades.ServicioCliente;
 import Entidades.Software;
 import org.example.MenuPrincipal;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
@@ -26,10 +28,21 @@ public class AreaComercialBack {
             entityManager.getTransaction().begin();
             entityManager.persist(cliente);
             entityManager.getTransaction().commit();
-        } finally {
-            entityManager.close();
+        } catch (PersistenceException e) {
+            if (e.getCause() instanceof ConstraintViolationException) {
+                System.out.println("Este CUIT ya se encuentra en nuestra base de datos");
+                if (MetodosControl.otro("Cargar otro cliente")){
+                    cargarCliente();
+                } else {
+                    AreaComercialBack.ingresoAreaComercial();
+                    throw e;
+                }
+            }
+            } finally {
+                entityManager.close();
+            }
         }
-    }
+
     // ------------- BUSCAR CLIENTE POR PARAMETRO QUE RECIBE EL METODO ---------------------------
 
     public static Cliente buscarClienteParametros(String consulta, String parametro, int valorInt, long valorLong, String valorString){
@@ -152,7 +165,7 @@ public class AreaComercialBack {
         cliente.setNombre(Scanners.obtenerStringSinFormato("Nombre"));
         cliente.setCuit(GeneralBack.controlFormatoCUIT("CUIT"));
         cliente.setCelular(GeneralBack.obtenerCelular("Celular"));
-        cliente.setMail(GeneralBack.controlFormatoEmail("Email:"));
+        cliente.setMail(GeneralBack.controlFormatoEmail("Email"));
         cliente.setEstado(true);
         return cliente;
     }
