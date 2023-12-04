@@ -166,10 +166,101 @@ public class GeneralBack {
     }
 
 
-    // --------------------------------------------------------------------------------------
-    // ---------------- METODOS INGRESO DATOS SCANNER ---------------------------------------
+    // ---------------- DAR BAJA A SOFTWARE ---------------------------------------
+    public static void ingresoBajaSoftware(){
+        List<Software> softwares = listarSoftwareActivos();
+        if (!softwares.isEmpty()){
+            int maximo, opcion;
+            do {
+                maximo = mostrarListaSoftwares(softwares);
+                opcion = controlOpcionIndices(maximo);
+                darDebajaSoftware(listarSoftwareActivos().get(opcion-1));
+            } while (!MetodosControl.otro("Dar de baja a otro software?"));
+        } else {
+            System.out.println("No posee softwares activos");
+            MenuPrincipal.inicioPrograma();
+        }
+    }
+
+    public static List<Software> listarSoftwareActivos() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Software> softwares;
+        try {
+            entityManager.getTransaction().begin();
+            String jpql = "SELECT s FROM Software s WHERE s.estado = :estado";
+            softwares = entityManager.createQuery(jpql, Software.class).setParameter("estado", true).getResultList();
+        } finally {
+            entityManager.close();
+        }
+        return softwares;
+    }
+
+    public static int mostrarListaSoftwares(List<Software> softwares){
+        int indice = 0;
+        for (Software software : softwares) {
+            indice ++;
+            System.out.println(indice + " - " + software.getNombre());
+        }
+        return indice;
+    }
+
+    public static void darDebajaSoftware(Software software){
+        software.setEstado(false);
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            try {
+                entityManager.getTransaction().begin();
+                entityManager.merge(software);
+                entityManager.getTransaction().commit();
+            } finally {
+                entityManager.close();
+                System.out.println("Baja software correcta con exito.");
+            }
+            MenuPrincipal.inicioPrograma();
+        }
 
 
+    // ---------------- DAR ALTA A SOFTWARE ---------------------------------------
 
 
+    public static void ingresoAltaSoftware(){
+        List<Software> softwares = listarSoftwareInactivos();
+        if (!softwares.isEmpty()){
+            int maximo, opcion;
+            do {
+                maximo = mostrarListaSoftwares(softwares);
+                opcion = controlOpcionIndices(maximo);
+                darAltaSoftware(listarSoftwareInactivos().get(opcion-1));
+            } while (!MetodosControl.otro("Dar de baja a otro software?"));
+        } else {
+            System.out.println("No posee softwares inactivos");
+            MenuPrincipal.inicioPrograma();
+        }
+    }
+
+    public static List<Software> listarSoftwareInactivos() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Software> softwares;
+        try {
+            entityManager.getTransaction().begin();
+            String jpql = "SELECT s FROM Software s WHERE s.estado = :estado";
+            softwares = entityManager.createQuery(jpql, Software.class).setParameter("estado", false).getResultList();
+        } finally {
+            entityManager.close();
+        }
+        return softwares;
+    }
+
+    public static void darAltaSoftware(Software software){
+        software.setEstado(true);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.merge(software);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+            System.out.println("Alta software correcta con exito.");
+        }
+        MenuPrincipal.inicioPrograma();
+    }
 }

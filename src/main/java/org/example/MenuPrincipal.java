@@ -32,8 +32,10 @@ public class MenuPrincipal {
         System.out.println("2. Area Comercial");
         System.out.println("3. Recursos Humanos");
         System.out.println("4. Agregar Software");
-        System.out.println("5. Salir");
-        return (5);
+        System.out.println("5. Baja a Software");
+        System.out.println("6. Alta Software");
+        System.out.println("7. Salir");
+        return (7);
     }
 
     public static void opcionesMenuPrincipal(int opcion) {
@@ -51,6 +53,12 @@ public class MenuPrincipal {
                 GeneralBack.cargarSoftware();
                 break;
             case 5:
+                GeneralBack.ingresoBajaSoftware();
+                break;
+            case 6:
+                GeneralBack.ingresoAltaSoftware();
+                break;
+            case 7:
                 System.exit(0);
         }
     }
