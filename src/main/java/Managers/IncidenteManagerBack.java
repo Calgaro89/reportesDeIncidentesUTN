@@ -61,12 +61,12 @@ public class IncidenteManagerBack {
 
     // ------------- BUSCA PARA CADA TECNICO LOS INCIDENTES RESUELTOS Y NO RESUELTOS --------------------------------
 
-    public static List<Incidente> obtenerTodosIncidentesPorTecnico(Software softwareIncidente, Tecnico tecnico) {
+    public static List<Incidente> obtenerTodosIncidentesPorTecnicoSinResolver(Software softwareIncidente, Tecnico tecnico) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Incidente> incidentes;
         try {
             entityManager.getTransaction().begin();
-            String jpql = "SELECT i FROM Incidente i WHERE i.tecnico = :tecnico AND i.servicioCliente.software = :software";
+            String jpql = "SELECT i FROM Incidente i WHERE i.tecnico = :tecnico AND i.servicioCliente.software = :software AND i.estado = true";
             incidentes = entityManager.createQuery(jpql, Incidente.class)
                     .setParameter("tecnico", tecnico)
                     .setParameter("software", softwareIncidente)
@@ -78,25 +78,20 @@ public class IncidenteManagerBack {
         return incidentes;
     }
 
-    public static double calcularPromedioTiempoResolucionTecnico(List<Incidente> incidentes) {
-        return incidentes.stream()
-                .filter(Incidente::isEstado)
-                .mapToDouble(IncidenteManagerBack::calcularTiempoTranscurrido)
-                .average()
-                .orElse(0.0);
-    }
-
-    public static double calcularTiempoTranscurrido(Incidente incidente) {
-        return Duration.between(incidente.getFechaIngreso(), incidente.getFechaRealFin()).toHours();
-    }
-
     public static Map<Tecnico, Double> obtenerListaOrdenadaPromediosResolucionTecnicos(List<Tecnico> tecnicos, Software softwareIncidente) {
         Map<Tecnico, Double> tiempoPromedioPorTecnico = new HashMap<>();
         Map<Tecnico, Double> finalTiempoPromedioPorTecnico = tiempoPromedioPorTecnico;
 
-        tecnicos.forEach(tecnico ->
-                finalTiempoPromedioPorTecnico.put(tecnico, calcularPromedioTiempoResolucionTecnico(obtenerTodosIncidentesPorTecnico(softwareIncidente, tecnico))));
+        tecnicos.forEach(tecnico -> {
+            List<Incidente> incidentesSinResolver = obtenerTodosIncidentesPorTecnicoSinResolver(softwareIncidente, tecnico);
 
+            if (!incidentesSinResolver.isEmpty()) {
+                double promedioTiempo = calcularPromedioTiempoResolucionTecnico(incidentesSinResolver);
+                finalTiempoPromedioPorTecnico.put(tecnico, promedioTiempo);
+            } else {
+                finalTiempoPromedioPorTecnico.put(tecnico, 10800.0);
+            }
+        });
         tiempoPromedioPorTecnico = tiempoPromedioPorTecnico.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
@@ -108,6 +103,22 @@ public class IncidenteManagerBack {
         return tiempoPromedioPorTecnico;
     }
 
+    public static double calcularPromedioTiempoResolucionTecnico(List<Incidente> incidentes) {
+        return incidentes.stream()
+                .filter(Incidente::isEstado)
+                .mapToDouble(IncidenteManagerBack::calcularTiempoTranscurrido)
+                .average()
+                .orElse(0.0);
+    }
+
+    public static double calcularTiempoTranscurrido(Incidente incidente) {
+        if (incidente.isEstado()) {
+            return Duration.between(incidente.getFechaIngreso(), incidente.getFechaRealFin()).toHours();
+        } else {
+            return 10800.0;
+        }
+    }
+
     public static Map.Entry<Tecnico, Double> encontrarMejorTecnicoPosibleDesocupado(Map<Tecnico, Double> tiempoPromedioPorTecnico, Software softwareIncidente) {
         return tiempoPromedioPorTecnico.entrySet().stream()
                 .filter(entry -> obtenerTodosIncidentesNoResueltos(softwareIncidente, entry.getKey()).isEmpty())
@@ -116,7 +127,7 @@ public class IncidenteManagerBack {
     }
 
     public static List<Incidente> obtenerTodosIncidentesNoResueltos(Software softwareIncidente, Tecnico tecnico) {
-        return obtenerTodosIncidentesPorTecnico(softwareIncidente, tecnico)
+        return obtenerTodosIncidentesPorTecnicoSinResolver(softwareIncidente, tecnico)
                 .stream()
                 .filter(incidente -> !incidente.isEstado())
                 .collect(Collectors.toList());
@@ -178,6 +189,7 @@ public class IncidenteManagerBack {
 
     public static void marcarIncidenteComoResuelto(Incidente incidente) {
         incidente.setEstado(true);
+        incidente.setFechaRealFin(Scanners.obtenerFechaFinDemora("Fecha finalizada"));
         actualizarIncidente(incidente);
         if (incidente.getTipoComunicacion().equals("email")) {
             SendMail.enviarCorreo(incidente.getServicioCliente().getCliente(), incidente.getTecnico().getNombre());

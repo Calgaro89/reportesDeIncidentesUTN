@@ -172,6 +172,7 @@ public class RRHHManagerBack {
         return servicioTecnico;
     }
 
+
     // ------------- CREAR TECNICO NUEVO ----------------------------------------------------------
 
     public static Tecnico crearTecnicoNuevo() {
@@ -352,21 +353,27 @@ public class RRHHManagerBack {
     }
 
     public static ServicioTecnico buscarServicioTecnicoParaBaja(Tecnico tecnico){
-       int indice = 1;
+       int indice = 0;
         List<Software> softwaresDeUnTecnico = softwareDeUnTecnico(tecnico);
-        System.out.println("Servicios: ");
-        for (Software software : softwaresDeUnTecnico) {
-            if (software.isEstado()) {
-                System.out.println(indice + ". " + software.getNombre());
-                indice++;
+        if (!softwaresDeUnTecnico.isEmpty()) {
+            System.out.println("Servicios: ");
+            for (Software software : softwaresDeUnTecnico) {
+                if (software.isEstado()) {
+                    indice++;
+                    System.out.println(indice + ". " + software.getNombre());
+                }
             }
+            int opcion = GeneralBack.controlOpcionIndices(indice);
+            return buscarServicioParaDarBaja(softwaresDeUnTecnico.get(opcion - 1), tecnico);
+        } else {
+            System.out.println("El técnico no tiene servicios en alta");
+            return null;
         }
-        int opcion = GeneralBack.controlOpcionIndices(softwaresDeUnTecnico.size());
-        return buscarServicioParaDarBaja(softwaresDeUnTecnico.get(opcion), tecnico);
     }
     public static List<Software> softwareDeUnTecnico(Tecnico tecnico){
         return RRHHManagerBack.obtenerServiciosTecnicos(tecnico)
                 .stream()
+                .filter(ServicioTecnico -> ServicioTecnico.isEstado())
                 .map(ServicioTecnico::getSoftware)
                 .collect(Collectors.toList());
     }

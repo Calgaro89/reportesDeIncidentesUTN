@@ -2,6 +2,7 @@ package Managers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
@@ -74,6 +75,26 @@ public class Scanners {
         } while (!formatoCorrecto);
 
         return localDate;
+    }
+
+    public static LocalDateTime obtenerFechaFinDemora(String tituloLineaIngreso){
+        LocalDateTime fechaActual = LocalDateTime.now();
+        boolean formatoCorrecto = false;
+        LocalDateTime fechaFinDemora = null;
+
+        do {
+            try {
+                System.out.print(tituloLineaIngreso + " (Formato: HH:mm): ");
+                String input = leer.nextLine();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                LocalDateTime horaIngresada = LocalDateTime.of(fechaActual.toLocalDate(), LocalTime.parse(input, formatter));
+                fechaFinDemora = fechaActual.with(LocalTime.from(horaIngresada.toLocalTime()));
+                formatoCorrecto = true;
+            } catch (DateTimeParseException error) {
+                System.out.println("Formato " + tituloLineaIngreso + " incorrecto. Inténtalo de nuevo.");
+            }
+        } while (!formatoCorrecto);
+        return fechaFinDemora;
     }
 
 }

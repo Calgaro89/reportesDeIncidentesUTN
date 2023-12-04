@@ -49,5 +49,4 @@ public class AreaComercialFront {
         System.out.println("5 - Volver al menu");
         return 5;
     }
-
 }

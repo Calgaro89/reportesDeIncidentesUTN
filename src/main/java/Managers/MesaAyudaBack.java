@@ -25,7 +25,7 @@ public class MesaAyudaBack {
             maximoOvolver = MesaAyudaFront.mostrarOpcionesMesaDeAyuda();
             opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             opcionesIngresoMesaDeAyuda(opcion);
-        } while (opcion != maximoOvolver-1);
+        } while (opcion != maximoOvolver);
     }
     public static void opcionesIngresoMesaDeAyuda(int opcion) {
                 switch (opcion) {
@@ -66,7 +66,7 @@ public class MesaAyudaBack {
             maximoOvolver = MesaAyudaFront.mostrarOpciones(cliente);
             opcion = GeneralBack.controlOpcionIndices(maximoOvolver);
             mesaDeAyudaCuentaAsociado(opcion);
-        } while (opcion != maximoOvolver + 1);
+        } while (opcion != maximoOvolver);
     }
     public static void mesaDeAyudaCuentaAsociado(int opcion) {
         switch (opcion) {
@@ -109,8 +109,7 @@ public class MesaAyudaBack {
     }
     // ------------- REPORTAR UN PROBLEMA -------------------------------------
     public static ServicioCliente iniciarReporteProblemas() {
-       int indiceMaximo = consultarSuscripciones(cliente);
-        System.out.println("Valor de indiceMaximo: " + indiceMaximo);
+        int indiceMaximo = consultarSuscripciones(cliente);
         int opcion = GeneralBack.controlOpcionIndices(indiceMaximo);
         Software software = listaSoftwaresClientes.get(opcion-1);
         return armarServicioClienteReporteProblema(software);
@@ -125,12 +124,12 @@ public class MesaAyudaBack {
     public static void crearIncidente(){
         Incidente incidente = new Incidente();
         incidente.setServicioCliente(iniciarReporteProblemas());
-        incidente.setDescripcion(GeneralBack.controlDescripcionIncidente("Ingrese descripcion. (Maximo 1000 caracteres"));
+        incidente.setDescripcion(GeneralBack.controlDescripcionIncidente("Ingrese descripcion. (Maximo 1000 caracteres)"));
         incidente.setFechaIngreso(LocalDateTime.now());
         incidente.setTipoComunicacion(tipoComunicacionReporteIncidente());
         incidente.setEstado(false);
-        IncidenteManagerBack.asignarTecnicoIncidente(incidente);
         cargarIncidente(incidente);
+        IncidenteManagerBack.asignarTecnicoIncidente(incidente);
     }
 
 
@@ -138,7 +137,6 @@ public class MesaAyudaBack {
 
     public static void cargarIncidente(Incidente incidente){
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        incidente.setEstado(false);
         try {
             entityManager.getTransaction().begin();
             entityManager.persist(incidente);

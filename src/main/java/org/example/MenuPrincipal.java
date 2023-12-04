@@ -14,9 +14,10 @@ public class MenuPrincipal {
         inicioPrograma();
     }
 
-    public static void cargarBaseDatos(){
+    public static void cargarBaseDatos() {
         GeneralBack.listarSoftware();
     }
+
     public static void inicioPrograma() {
         int opcion;
         do {
@@ -31,11 +32,9 @@ public class MenuPrincipal {
         System.out.println("1. Mesa de Ayuda");
         System.out.println("2. Area Comercial");
         System.out.println("3. Recursos Humanos");
-        System.out.println("4. Agregar Software");
-        System.out.println("5. Baja a Software");
-        System.out.println("6. Alta Software");
-        System.out.println("7. Salir");
-        return (7);
+        System.out.println("4. Control Software");
+        System.out.println("5. Salir");
+        return (5);
     }
 
     public static void opcionesMenuPrincipal(int opcion) {
@@ -50,17 +49,44 @@ public class MenuPrincipal {
                 RRHHManagerBack.ingresoIndiceRRHH();
                 break;
             case 4:
-                GeneralBack.cargarSoftware();
+                ingresoControlSoftware();
                 break;
             case 5:
-                GeneralBack.ingresoBajaSoftware();
-                break;
-            case 6:
-                GeneralBack.ingresoAltaSoftware();
-                break;
-            case 7:
                 System.exit(0);
         }
     }
 
+    public static int mostrarMenuSoftware() {
+        System.out.println("1. Agregar Software");
+        System.out.println("2. Baja a Software");
+        System.out.println("3. Alta Software");
+        System.out.println("4. volver");
+        return 4;
+    }
+
+    public static void ingresoControlSoftware() {
+        int maximo, opcion;
+        do {
+            maximo = mostrarMenuSoftware();
+            opcion = GeneralBack.controlOpcionIndices(maximo);
+            opcionesControlSoftware(opcion);
+        } while(opcion != 4);
+    }
+
+    public static void opcionesControlSoftware(int opcion) {
+        switch (opcion) {
+            case 1:
+                GeneralBack.cargarSoftware();
+                break;
+            case 2:
+                GeneralBack.ingresoBajaSoftware();
+                break;
+            case 3:
+                GeneralBack.ingresoAltaSoftware();
+                break;
+            case 4:
+                inicioPrograma();
+                break;
+        }
+    }
 }
