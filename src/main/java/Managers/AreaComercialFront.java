@@ -46,7 +46,8 @@ public class AreaComercialFront {
         System.out.println("2 - CUIT");
         System.out.println("3 - e-mail");
         System.out.println("4 - Celular");
-        System.out.println("5 - Volver al menu");
-        return 5;
+        System.out.println("5 - Alta cliente");
+        System.out.println("6 - Volver al menu");
+        return 6;
     }
 }

@@ -88,6 +88,18 @@ public class AreaComercialBack {
             entityManager.close();
         }
     }
+
+    public static void altaCliente(Cliente cliente) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        cliente.setEstado(true);
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.merge(cliente);
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+    }
     // ------------- CARGAR DATOS ACTUALIZADOS DE UN CLIENTE ---------------------------------
     public static void actualizarDatosCliente(Cliente cliente) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -245,7 +257,8 @@ public class AreaComercialBack {
             case 2: modificarCUIT(cliente);break;
             case 3: modificarEmail(cliente);break;
             case 4: modificarCelular(cliente); break;
-            case 5: AreaComercialFront.mostrarTablaClientesAsociado(cliente);break;
+            case 5: altaCliente(cliente); break;
+            case 6: AreaComercialFront.mostrarTablaClientesAsociado(cliente);break;
         }
     }
 

@@ -164,11 +164,10 @@ public class IncidenteManagerBack {
     public static List<Incidente> obtenerIncidentesNoResueltoCliente(Cliente cliente){
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Incidente> incidentes;
-        String jpql = "SELECT i FROM Incidente i WHERE i.estado = :estado AND i.servicioCliente.cliente.idCliente = :idCliente";
+        String jpql = "SELECT i FROM Incidente i WHERE i.estado = false AND i.servicioCliente.cliente.idCliente = :idCliente";
         try {
             entityManager.getTransaction().begin();
             incidentes = entityManager.createQuery(jpql, Incidente.class)
-                    .setParameter("estado", false)
                     .setParameter("idCliente", cliente.getIdCliente())
                     .getResultList();
             entityManager.getTransaction().commit();
