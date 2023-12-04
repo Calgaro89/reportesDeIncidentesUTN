@@ -184,17 +184,6 @@ public class MesaAyudaBack {
     }
 
     // ------------- DAR INCIDENTES POR RESUELTO -------------------------------------
-    public static void resolverIncidenteServicioCliente(Incidente incidente) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-            incidente.setEstado(true);
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(incidente);
-            entityManager.getTransaction().commit();
-        } finally {
-            entityManager.close();
-        }
-    }
 
     public static String tipoComunicacionReporteIncidente(){
         System.out.println("Vía comunicacion preferida");

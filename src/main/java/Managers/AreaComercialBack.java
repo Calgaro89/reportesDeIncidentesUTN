@@ -347,8 +347,9 @@ public class AreaComercialBack {
                 case 4:consultarDatosCliente(cliente);break;
                 case 5:cargarNuevoServicioCliente(cliente);break;
                 case 6:bajaServiciosCliente(cliente);break;
-                case 7: ingresoAreaComercial();break;
-                case 8:System.exit(0);break;
+                case 7:IncidenteManagerBack.ingresoFinIncidente(cliente);break;
+                case 8:ingresoAreaComercial();break;
+
             }
     }
     // ------------- INGRESO ACCIONES AREA COMERCIAL -------------------------------------

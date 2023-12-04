@@ -34,8 +34,9 @@ public class AreaComercialFront {
         System.out.println("4 - Consulta Cliente");
         System.out.println("5 - Nuevo Servicio");
         System.out.println("6 - Baja Servicio");
-        System.out.println("7 - Volver");
-        return 7;
+        System.out.println("7 - Solucionar Incidente");
+        System.out.println("8 - Volver");
+        return 8;
     }
 
     public static int mostrarMenuModificarCliente(Cliente cliente) {

@@ -135,6 +135,47 @@ public class IncidenteManagerBack {
 
     // ------------- MARCAR INCIDENTE COMO RESUELTO ---------------------------------------
 
+    public static void ingresoFinIncidente(Cliente cliente){
+        List<Incidente> incidentes = obtenerIncidentesNoResueltoCliente(cliente);
+        if (!incidentes.isEmpty()){
+        Incidente incidente;
+        do{
+           int maximo = mostrarListaIncidentes(incidentes);
+           int opcion = GeneralBack.controlOpcionIndices(maximo);
+           incidente = incidentes.get(opcion-1);
+           marcarIncidenteComoResuelto(incidente);
+        }while(!MetodosControl.otro("Finalizar otro incidente?"));
+    } else {
+            System.out.println("El cliente no posee incidentes para solucionar");
+            AreaComercialBack.ingresoAreaComercial();
+        }
+    }
+    public static List<Incidente> obtenerIncidentesNoResueltoCliente(Cliente cliente){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Incidente> incidentes;
+        String jpql = "SELECT i FROM Incidente i WHERE i.estado = :estado AND i.servicioCliente.cliente.idCliente = :idCliente";
+        try {
+            entityManager.getTransaction().begin();
+            incidentes = entityManager.createQuery(jpql, Incidente.class)
+                    .setParameter("estado", false)
+                    .setParameter("idCliente", cliente.getIdCliente())
+                    .getResultList();
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+        return incidentes;
+    }
+
+    public static int mostrarListaIncidentes(List<Incidente> incidentes){
+        int indice = 0;
+        for (Incidente incidete : incidentes) {
+            indice++;
+            System.out.println(indice + ". " + incidete.getServicioCliente().getSoftware().getNombre());
+        }
+        return indice;
+    }
+
     public static void marcarIncidenteComoResuelto(Incidente incidente) {
         incidente.setEstado(true);
         actualizarIncidente(incidente);
