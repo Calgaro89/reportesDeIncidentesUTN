@@ -146,7 +146,7 @@ public class GeneralBack {
     public static String controlDescripcionIncidente(String tituloLineaIngreso){
         String descripcion;
         do{
-            descripcion = Scanners.obtenerStringSinFormato(tituloLineaIngreso);
+            descripcion = Scanners.obtenerCadenaString(tituloLineaIngreso);
         }while (descripcion.length()>100);
         return descripcion;
     }

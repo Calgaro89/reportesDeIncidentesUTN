@@ -17,6 +17,12 @@ public class Scanners {
         return textoIngresado;
     }
 
+    public static String obtenerCadenaString(String titulo){
+        System.out.print(titulo + ": ");
+        String textoIngresado = leer.nextLine();
+        return textoIngresado;
+    }
+
     public static int obtenerNumeroInt(String tituloLineaIngreso) {
         boolean numeroCorrecto = false;
         int numero = 0;
