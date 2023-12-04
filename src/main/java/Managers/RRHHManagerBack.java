@@ -95,6 +95,23 @@ public class RRHHManagerBack {
             entityManager.getTransaction().begin();
             String jpql = "SELECT st.tecnico FROM ServicioTecnico st WHERE st.software = :software";
             tecnicos = entityManager.createQuery(jpql, Tecnico.class).setParameter("software", software).getResultList();
+            entityManager.getTransaction().commit();
+        } finally {
+            entityManager.close();
+        }
+        return tecnicos;
+    }
+
+    // ------------- LISTAR TODOS LOS TECNICOS -------------------------------------------------
+
+    public static List<Tecnico> listarTodosLosTecnicos() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Tecnico> tecnicos;
+        String consulta = "SELECT t FROM Tecnico t";
+        try {
+            entityManager.getTransaction().begin();
+            tecnicos = entityManager.createQuery(consulta, Tecnico.class).getResultList();
+            entityManager.getTransaction().commit();
         } finally {
             entityManager.close();
         }

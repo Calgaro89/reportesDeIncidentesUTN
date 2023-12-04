@@ -41,16 +41,20 @@ public class IncidenteManagerBack {
         if (mejorTecnicoEntry != null) {
             tecnico = mejorTecnicoEntry.getKey();
             tiempoPromedio = mejorTecnicoEntry.getValue();
-
             incidente.setTecnico(tecnico);
             incidente.setFechaEstimadaFin(calculoFechaEstimadaFin(tiempoPromedio));
         } else {
             Map.Entry<Tecnico, Double> mejorTecnicoEntryOcupado = encontrarMejorTecnicoOcupado(tiempoPromedioPorTecnico);
+            if (mejorTecnicoEntryOcupado != null){
             tecnico = mejorTecnicoEntryOcupado.getKey();
             tiempoPromedio = mejorTecnicoEntryOcupado.getValue();
-
             incidente.setTecnico(tecnico);
             incidente.setFechaEstimadaFin(calculoFechaEstimadaFin(tiempoPromedio));
+            } else {
+                tecnico = RRHHManagerBack.listarTodosLosTecnicos().get(0);
+                incidente.setTecnico(tecnico);
+                incidente.setFechaEstimadaFin(calculoFechaEstimadaFin((10080.0)));
+            }
         }
         actualizarIncidente(incidente);
     }
